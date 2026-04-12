@@ -1,6 +1,7 @@
 const express = require("express");
 require("dotenv").config();
 const rateLimit = require("express-rate-limit");
+const cors = require("cors");
 
 // Routes
 const authRoutes = require("./routes/authRoutes");
@@ -15,7 +16,6 @@ const seedAdmin = require("./utils/seedAdmin");
 
 const app = express();
 
-
 // --- INITIAL SETUP ---
 
 // Connect database
@@ -28,6 +28,12 @@ const PORT = process.env.PORT || 5000;
 
 
 // --- MIDDLEWARE ---
+
+// allow frontend access
+app.use(cors({
+    origin: "https://career-sync-psi.vercel.app",
+    credentials: true
+}));
 
 // Parse JSON
 app.use(express.json());
