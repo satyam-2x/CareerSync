@@ -1,7 +1,7 @@
 const Job = require("../models/Job");
 const Application = require("../models/Application");
 const User = require("../models/User");
-const transporter = require("../utils/mailer");
+const sendMail = require("../utils/mailer");
 const applicationStatusTemplate = require("../utils/emails/applicationStatus");
 
 // --- POST JOB ---
@@ -169,21 +169,19 @@ exports.updateApplicationStatus = async (req, res) => {
 
         const user = await User.findById(app.studentId);
 
+        // send email notification
         try {
-            // Send email notification
-            const { subject, html } = applicationStatusTemplate(
+            const template = applicationStatusTemplate(
                 user.name,
                 job.title,
                 status
             );
 
-            await transporter.sendMail({
-                from: "CareerSync <admin.careersync@gmail.com>",
-                to: user.email,
-                subject,
-                html,
-            });
-
+            await sendMail(
+                user.email,
+                template.subject,
+                template.html
+            );
         } catch (e) {
             console.log("Mail error:", e.message);
         }

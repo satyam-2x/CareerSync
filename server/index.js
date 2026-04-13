@@ -32,7 +32,10 @@ const PORT = process.env.PORT || 5000;
 
 // allow frontend access
 app.use(cors({
-    origin: "https://career-sync-psi.vercel.app",
+    origin: [
+        "http://localhost:5173",
+        "https://career-sync-psi.vercel.app",
+    ],
     credentials: true
 }));
 

@@ -1,7 +1,7 @@
 const bcrypt = require("bcryptjs");
 const User = require("../models/User");
 const jwt = require("jsonwebtoken");
-const transporter = require("../utils/mailer");
+const sendMail = require("../utils/mailer");
 const verifyEmailTemplate = require("../utils/emails/verifyEmail");
 const resetPasswordTemplate = require("../utils/emails/resetPasswordEmail");
 
@@ -52,12 +52,14 @@ exports.signup = async (req, res) => {
             otpExpire: Date.now() + 5 * 60 * 1000
         });
 
-        await transporter.sendMail({
-            from: "CareerSync <admin.careersync@gmail.com>",
-            to: email,
-            subject: "OTP Verification",
-            html: verifyEmailTemplate(otp),
-        });
+        const template = verifyEmailTemplate(otp);
+
+        await sendMail(
+            email,
+            template.subject,
+            template.html
+        );
+
 
         res.status(201).json({
             success: true,
@@ -156,12 +158,13 @@ exports.forgotPassword = async (req, res) => {
 
         await user.save();
 
-        await transporter.sendMail({
-            from: "CareerSync <admin.careersync@gmail.com>",
-            to: email,
-            subject: "Reset Password OTP",
-            html: resetPasswordTemplate(otp)
-        });
+        const template = resetPasswordTemplate(otp);
+
+        await sendMail(
+            email,
+            template.subject,
+            template.html
+        );
 
         res.json({ message: "OTP sent to email" });
 

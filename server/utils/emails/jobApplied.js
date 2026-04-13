@@ -1,16 +1,17 @@
-// Email template for successful job application
 const jobAppliedTemplate = (name, jobTitle) => {
   return {
-    subject: "Application successful",
+    subject: "Application Successful",
     html: `
-      <p>Hello ${name},</p>
+      <div>
+        <p>Hello ${name || "User"},</p>
 
-      <p>You have successfully applied for <b>${jobTitle}</b>.</p>
-      <p>We will notify you about further updates.</p>
+        <p>You have successfully applied for <b>${jobTitle}</b>.</p>
+        <p>We will notify you about further updates.</p>
 
-      <br/>
-      <p>Best regards,</p>
-      <p><b>CareerSync Team</b></p>
+        <br/>
+        <p>Best regards,</p>
+        <p><b>CareerSync Team</b></p>
+      </div>
     `
   };
 };

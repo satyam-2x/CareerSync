@@ -1,7 +1,7 @@
 const Job = require("../models/Job");
 const Application = require("../models/Application");
 const User = require("../models/User");
-const transporter = require("../utils/mailer");
+const sendMail = require("../utils/mailer");
 const jobAppliedTemplate = require("../utils/emails/jobApplied");
 
 
@@ -79,14 +79,14 @@ exports.applyJob = async (req, res) => {
 
         await Application.create({ jobId, studentId });
 
-        const { subject, html } = jobAppliedTemplate(user.name, job.title);
 
-        await transporter.sendMail({
-            from: "CareerSync <admin.careersync@gmail.com>",
-            to: user.email,
-            subject,
-            html,
-        });
+        const template = jobAppliedTemplate(user.name, job.title);
+
+        await sendMail(
+            user.email,
+            template.subject,
+            template, html
+        );
 
         res.status(201).json({ message: "Applied successfully" });
 
