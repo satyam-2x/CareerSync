@@ -14,6 +14,8 @@ const tpoRoutes = require("./routes/tpoRoutes");
 const connectDB = require("./config/db");
 const seedAdmin = require("./utils/seedAdmin");
 
+app.set('trust proxy', 1);
+
 const app = express();
 
 // --- INITIAL SETUP ---
