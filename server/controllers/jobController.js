@@ -82,6 +82,7 @@ exports.applyJob = async (req, res) => {
         const { subject, html } = jobAppliedTemplate(user.name, job.title);
 
         await transporter.sendMail({
+            from: "CareerSync <admin.careersync@gmail.com>",
             to: user.email,
             subject,
             html,

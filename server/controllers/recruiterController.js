@@ -178,6 +178,7 @@ exports.updateApplicationStatus = async (req, res) => {
             );
 
             await transporter.sendMail({
+                from: "CareerSync <admin.careersync@gmail.com>",
                 to: user.email,
                 subject,
                 html,

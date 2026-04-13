@@ -53,6 +53,7 @@ exports.signup = async (req, res) => {
         });
 
         await transporter.sendMail({
+            from: "CareerSync <admin.careersync@gmail.com>",
             to: email,
             subject: "OTP Verification",
             html: verifyEmailTemplate(otp),
@@ -156,6 +157,7 @@ exports.forgotPassword = async (req, res) => {
         await user.save();
 
         await transporter.sendMail({
+            from: "CareerSync <admin.careersync@gmail.com>",
             to: email,
             subject: "Reset Password OTP",
             html: resetPasswordTemplate(otp)
