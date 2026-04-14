@@ -4,15 +4,12 @@ const jobSchema = new mongoose.Schema({
     title: { type: String, required: true },
     description: { type: String, required: true },
 
-    // List of required skills/criteria
     requirements: [{ type: String }],
 
     salary: { type: String },
     location: { type: String },
 
-    // Minimum CGPA required
     minCgpa: { type: Number, default: 0 },
-
 
     eligibleBatch: [{ type: String }],
     eligibleBranches: [{ type: String }],
@@ -26,13 +23,13 @@ const jobSchema = new mongoose.Schema({
 
     // Job type: full-time | internship | remote
     jobType: {
-        type: String, enum: ["full-time", "internship", "remote"],
+        type: String,
+        enum: ["full-time", "internship", "remote"],
         default: "full-time"
     },
 
     deadline: { type: Date },
 
-    // Admin approval status
     approved: { type: Boolean, default: false },
 
     recruiterId: {
@@ -41,7 +38,7 @@ const jobSchema = new mongoose.Schema({
         required: true
     }
 
-}, { timestamps: true }); // Adds createdAt & updatedAt
+}, { timestamps: true });
 
 
 module.exports = mongoose.model("Job", jobSchema);

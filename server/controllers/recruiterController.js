@@ -10,7 +10,7 @@ exports.postJob = async (req, res) => {
         const recruiter = await User.findById(req.user.id);
 
         // Check recruiter verification
-        if (!recruiter.verified) {
+        if (!recruiter.verified) { 
             return res.status(403).json({
                 message: "Only verified recruiters can post jobs"
             });
@@ -130,7 +130,6 @@ exports.getApplicants = async (req, res) => {
             status: { $ne: "deleted" }
         }).populate("studentId", "name email branch cgpa resume");
 
-        // Filter out deleted users
         const filtered = applicants.filter(app => app.studentId != null);
 
         res.json({
@@ -163,13 +162,11 @@ exports.updateApplicationStatus = async (req, res) => {
             return res.status(403).json({ message: "Not authorized" });
         }
 
-        // Update application status
         app.status = status;
         await app.save();
 
         const user = await User.findById(app.studentId);
 
-        // send email notification
         try {
             const template = applicationStatusTemplate(
                 user.name,
@@ -192,4 +189,22 @@ exports.updateApplicationStatus = async (req, res) => {
         console.log(error);
         res.status(500).json({ message: "Error updating status" });
     }
+};
+
+// --- GET JOB BY ID ---
+exports.getRecruiterJobById = async (req, res) => {
+  try {
+    const job = await Job.findOne({
+      _id: req.params.id,
+      recruiterId: req.user.id
+    });
+
+    if (!job) {
+      return res.status(404).json({ message: "Job not found" });
+    }
+
+    res.json(job);
+  } catch (error) {
+    res.status(500).json({ message: "Error fetching job" });
+  }
 };

@@ -10,41 +10,35 @@ exports.signup = async (req, res) => {
     try {
         const { name, email, password, role, companyEmail } = req.body;
 
-        // Validate required fields
         if (!name || !email || !password) {
             return res.status(400).json({ message: "All fields are required" });
         }
 
-        // Basic password strength check
         if (password.length < 6) {
             return res.status(400).json({ message: "Password must be at least 6 characters" });
         }
 
-        // Prevent admin registration
         if (role === "admin") {
             return res.status(403).json({ message: "You cannot register as admin" });
         }
 
-        // Validate role-specific fields (recruiter)
         if (role === "recruiter" && !companyEmail) {
             return res.status(400).json({ message: "Company email required" });
         }
 
-        // Check if user already exists
+
         const userExists = await User.findOne({ email: email.toLowerCase() });
         if (userExists) {
             return res.status(400).json({ message: "Email already registered" });
         }
 
-        // Hash password before saving
         const hashPassword = await bcrypt.hash(password, 10);
 
-        // Generate OTP
         const otp = Math.floor(100000 + Math.random() * 900000).toString();
 
         const newUser = await User.create({
             name,
-            email: email.toLowerCase(),
+            email: email.toLowerCase(), // already correct
             password: hashPassword,
             role: role || "student",
             companyEmail,
@@ -59,7 +53,6 @@ exports.signup = async (req, res) => {
             template.subject,
             template.html
         );
-
 
         res.status(201).json({
             success: true,
@@ -78,9 +71,9 @@ exports.verifyOtp = async (req, res) => {
     try {
         const { email, otp } = req.body;
 
-        const user = await User.findOne({ email });
 
-        // Check OTP validity and expiration
+        const user = await User.findOne({ email: email.toLowerCase() });
+
         if (!user || user.otp !== otp || user.otpExpire < Date.now()) {
             return res.status(400).json({ message: "Invalid or expired OTP" });
         }
@@ -104,18 +97,17 @@ exports.login = async (req, res) => {
     try {
         const { email, password } = req.body;
 
-        // Check email & password 
-        const user = await User.findOne({ email });
+
+        const user = await User.findOne({ email: email.toLowerCase() });
+
         if (!user || !(await bcrypt.compare(password, user.password))) {
             return res.status(401).json({ message: "Invalid email or password" });
         }
 
-        // Ensure user is verified 
         if (!user.isVerified) {
             return res.status(403).json({ message: "Please verify your email first" });
         }
 
-        // Generate JWT token (1 day expiry)
         const token = jwt.sign(
             { id: user._id, role: user.role },
             process.env.JWT_SECRET,
@@ -142,15 +134,16 @@ exports.logout = (req, res) => {
     res.json({ message: "Logged out successfully" });
 };
 
-// FORGOT PASSWORD
+// --- FORGOT PASSWORD ---
 exports.forgotPassword = async (req, res) => {
     try {
         const { email } = req.body;
 
-        const user = await User.findOne({ email });
+
+        const user = await User.findOne({ email: email.toLowerCase() });
+
         if (!user) return res.status(404).json({ message: "User not found" });
 
-        // Generate reset OTP (valid for 10 minutes)
         const otp = Math.floor(100000 + Math.random() * 900000).toString();
 
         user.resetPasswordOTP = otp;
@@ -180,7 +173,7 @@ exports.resetPassword = async (req, res) => {
         const { email, otp, password } = req.body;
 
         const user = await User.findOne({
-            email,
+            email: email.toLowerCase(),
             resetPasswordOTP: otp,
             resetPasswordExpires: { $gt: Date.now() }
         });
@@ -189,7 +182,6 @@ exports.resetPassword = async (req, res) => {
             return res.status(400).json({ message: "Invalid or expired OTP" });
         }
 
-        // Hash new password 
         user.password = await bcrypt.hash(password, 10);
         user.resetPasswordOTP = undefined;
         user.resetPasswordExpires = undefined;
@@ -202,5 +194,3 @@ exports.resetPassword = async (req, res) => {
         res.status(500).json({ message: "Reset failed" });
     }
 };
-
-

@@ -11,6 +11,7 @@ const {
   deleteJob,
   getApplicants,
   updateApplicationStatus,
+  getRecruiterJobById,
 } = require("../controllers/recruiterController");
 
 
@@ -32,9 +33,11 @@ router.delete("/jobs/:id", isAuthenticated, authorizeRoles("recruiter"), deleteJ
 // --- APPLICATION MANAGEMENT ---
 
 // Get applicants for a job
-router.get("/jobs/:id/applicants", isAuthenticated, authorizeRoles("recruiter"), getApplicants);
+router.get("/jobs/:id/applicants", isAuthenticated, authorizeRoles("recruiter"), getApplicants); 
 
 // Update application status
 router.put("/applications/:id", isAuthenticated, authorizeRoles("recruiter"), updateApplicationStatus);
+
+router.get("/jobs/:id", isAuthenticated, authorizeRoles("recruiter"), getRecruiterJobById);
 
 module.exports = router;

@@ -38,12 +38,11 @@ exports.verifyStudent = async (req, res) => {
             return res.status(404).json({ message: "Student not found" });
         }
 
-        // Ensure PRN exists before verification
         if (!user.prn) {
             return res.status(400).json({ message: "Student must have PRN" });
         }
 
-        user.verified = true;
+        user.verified = true; 
         await user.save();
 
         res.status(200).json({ success: true, message: "Student verified" });
@@ -90,12 +89,11 @@ exports.verifyRecruiter = async (req, res) => {
             return res.status(404).json({ message: "Recruiter not found" });
         }
 
-        // Ensure company email exists
         if (!user.companyEmail) {
             return res.status(400).json({ message: "Company email required" });
         }
 
-        user.verified = true;
+        user.verified = true; 
         await user.save();
 
         res.status(200).json({ success: true, message: "Recruiter verified" });

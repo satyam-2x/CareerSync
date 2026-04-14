@@ -64,11 +64,10 @@ function RecruiterDetails() {
       <div className="bg-white p-5 rounded-2xl shadow-md w-full max-w-md">
 
         {message && (
-          <div className={`mt-4 p-3 rounded-lg text-sm text-center ${
-            type === "success"
-              ? "bg-green-100 text-green-700"
-              : "bg-red-100 text-red-700"
-          }`}>
+          <div className={`mt-4 p-3 rounded-lg text-sm text-center ${type === "success"
+            ? "bg-green-100 text-green-700"
+            : "bg-red-100 text-red-700"
+            }`}>
             {message}
           </div>
         )}
@@ -83,6 +82,22 @@ function RecruiterDetails() {
 
         <p className="text-sm">
           Contact: {rec.contactNumber || "N/A"}
+        </p>
+
+        <p>
+          Website:{" "}
+          {rec.companyWebsite ? (
+            <a
+              href={rec.companyWebsite}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="text-blue-600 underline"
+            >
+              {rec.companyWebsite}
+            </a>
+          ) : (
+            "N/A"
+          )}
         </p>
 
         <p className="mt-3 text-sm">

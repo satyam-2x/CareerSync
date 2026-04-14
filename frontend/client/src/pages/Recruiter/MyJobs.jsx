@@ -27,7 +27,8 @@ function MyJobs() {
   useEffect(() => {
     const fetchJobs = async () => {
       try {
-        const res = await getMyJobs(localStorage.getItem("token"));
+        const token = localStorage.getItem("token");
+        const res = await getMyJobs(token);
         setJobs(res.data.jobs);
       } catch {
         setMessage("Error loading jobs");
@@ -43,7 +44,8 @@ function MyJobs() {
   // Delete job
   const confirmDelete = async () => {
     try {
-      await deleteJob(deleteId, localStorage.getItem("token"));
+      const token = localStorage.getItem("token");
+      await deleteJob(deleteId, token);
 
       setJobs(jobs.filter((job) => job._id !== deleteId));
       setMessage("Job deleted");

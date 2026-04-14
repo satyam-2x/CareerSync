@@ -53,10 +53,8 @@ function ChangePassword() {
     try {
       setLoading(true);
 
-      const res = await changePassword(
-        form,
-        localStorage.getItem("token")
-      );
+      const token = localStorage.getItem("token");
+      const res = await changePassword(form, token);
 
       setMessage(res.data.message || "Password updated");
       setType("success");
@@ -81,9 +79,8 @@ function ChangePassword() {
         </h2>
 
         {message && (
-          <div className={`mt-4 p-3 rounded-lg text-sm text-center ${
-            type === "success" ? "bg-green-100 text-green-700" : "bg-red-100 text-red-700"
-          }`}>
+          <div className={`mt-4 p-3 rounded-lg text-sm text-center ${type === "success" ? "bg-green-100 text-green-700" : "bg-red-100 text-red-700"
+            }`}>
             {message}
           </div>
         )}

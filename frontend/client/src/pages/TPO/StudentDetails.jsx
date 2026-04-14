@@ -77,8 +77,30 @@ function StudentDetails() {
           {student.name || "N/A"}
         </h2>
 
-        <div className="mt-2 text-sm text-gray-600">
+        <div className="mt-2 text-sm text-gray-600 space-y-1">
           <p>Email: {student.email || "N/A"}</p>
+          <p>PRN: {student.prn || "N/A"}</p>
+          <p>Course: {student.course || "N/A"}</p>
+          <p>Branch: {student.branch || "N/A"}</p>
+          <p>Semester: {student.semester || "N/A"}</p>
+          <p>CGPA: {student.cgpa || "N/A"}</p>
+
+          {/* Resume */}
+          <p>
+            Resume:{" "}
+            {student.resume ? (
+              <a
+                href={student.resume}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="text-blue-600 underline"
+              >
+                View
+              </a>
+            ) : (
+              "Not uploaded"
+            )}
+          </p>
         </div>
 
         <p className="mt-2 text-sm">

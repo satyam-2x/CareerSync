@@ -17,16 +17,18 @@ const {
 // Get all jobs
 router.get("/", getAllJobs);
 
-// Get single job
-router.get("/:id", getJobById);
-
-
 // --- STUDENT ROUTES ---
 
 // Get my applications
-router.get("/me", isAuthenticated, authorizeRoles("student"), getMyApplications);
+router.get("/me", isAuthenticated, authorizeRoles("student"), getMyApplications); 
+
 
 // Apply to job
 router.post("/:id/apply", isAuthenticated, authorizeRoles("student"), applyJob);
+
+
+// Get single job
+router.get("/:id", getJobById); 
+
 
 module.exports = router;

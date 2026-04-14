@@ -19,10 +19,7 @@ app.set('trust proxy', 1);
 
 // --- INITIAL SETUP ---
 
-// Connect database
 connectDB();
-
-// Seed admin (runs once if not exists)
 seedAdmin();
 
 const PORT = process.env.PORT || 5000;
@@ -30,7 +27,6 @@ const PORT = process.env.PORT || 5000;
 
 // --- MIDDLEWARE ---
 
-// allow frontend access
 app.use(cors({
     origin: [
         "http://localhost:5173",
@@ -39,17 +35,16 @@ app.use(cors({
     credentials: true
 }));
 
-// Parse JSON
 app.use(express.json());
 
 // Rate limiter
 const limiter = rateLimit({
     windowMs: 15 * 60 * 1000,
-    max: 50,
+    max: 500,
     message: "Too many requests, try again later"
 });
 
-app.use("/api", limiter);
+app.use("/api", limiter); 
 
 
 // --- ROUTES ---

@@ -40,3 +40,9 @@ export const updateApplicationStatus = (appId, data, token) =>
     API.put(`/api/recruiter/applications/${appId}`, data, {
         headers: { Authorization: `Bearer ${token}` },
     });
+
+// Edit particular job by id
+export const getRecruiterJobById = (id, token) =>
+    API.get(`/api/recruiter/jobs/${id}`, {
+        headers: { Authorization: `Bearer ${token}` },
+    });

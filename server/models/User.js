@@ -13,7 +13,6 @@ const userSchema = new mongoose.Schema({
         match: [/^\S+@\S+\.\S+$/, "Invalid email format"]
     },
 
-
     password: {
         type: String,
         required: true,
@@ -74,8 +73,7 @@ const userSchema = new mongoose.Schema({
     // --- EMAIL OTP VERIFICATION ---
     otp: { type: String },
     otpExpire: { type: Date },
-    isVerified: { type: Boolean, default: false }
-
-}, { timestamps: true }); // Adds createdAt & updatedAt
+    isVerified: { type: Boolean, default: false } 
+}, { timestamps: true });
 
 module.exports = mongoose.model("User", userSchema);

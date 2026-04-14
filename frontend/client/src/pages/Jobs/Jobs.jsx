@@ -1,18 +1,15 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { getJobs } from "../../services/jobService";
+import { getJobs } from "../../services/jobService"; // ✅ correct
 
 function Jobs() {
-  const navigate = useNavigate();
-
-  // State management
   const [jobs, setJobs] = useState([]);
   const [loading, setLoading] = useState(true);
   const [message, setMessage] = useState("");
   const [type, setType] = useState("");
   const [search, setSearch] = useState("");
+  const navigate = useNavigate();
 
-  // Auto-clear message
   useEffect(() => {
     if (message) {
       const timer = setTimeout(() => {
@@ -23,10 +20,9 @@ function Jobs() {
     }
   }, [message]);
 
-  // Fetch jobs (with search)
   const fetchJobs = async () => {
     try {
-      const res = await getJobs(search);
+      const res = await getJobs(search); 
       setJobs(res.data);
     } catch (err) {
       setMessage("Error fetching jobs");
@@ -36,7 +32,6 @@ function Jobs() {
     }
   };
 
-  // Debounce search
   useEffect(() => {
     const delay = setTimeout(() => {
       fetchJobs();
@@ -51,7 +46,6 @@ function Jobs() {
 
   return (
     <div className="min-h-screen bg-gray-100 py-10 px-4">
-
       <h2 className="text-2xl font-semibold text-center mb-4 text-gray-800">
         Available Jobs
       </h2>
@@ -65,9 +59,7 @@ function Jobs() {
       />
 
       {message && (
-        <p className={`text-center mb-4 ${
-          type === "error" ? "text-red-500" : "text-green-600"
-        }`}>
+        <p className={`text-center mb-4 ${type === "error" ? "text-red-500" : "text-green-600"}`}>
           {message}
         </p>
       )}
@@ -79,7 +71,7 @@ function Jobs() {
           {jobs.map((job) => (
             <div
               key={job._id}
-              className="bg-white p-5 rounded-lg border shadow-sm hover:shadow-md transition"
+              className="bg-white p-5 rounded-lg border shadow-sm"
             >
               <h3 className="text-lg font-semibold text-gray-800">
                 {job.title}
@@ -100,7 +92,7 @@ function Jobs() {
               <div className="mt-4 flex justify-end">
                 <button
                   onClick={() => navigate(`/jobs/${job._id}`)}
-                  className="text-blue-600 font-medium hover:underline"
+                  className="text-blue-600 font-medium"
                 >
                   View Details →
                 </button>

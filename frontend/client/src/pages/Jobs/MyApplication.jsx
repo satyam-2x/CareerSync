@@ -23,6 +23,7 @@ function MyApplications() {
   useEffect(() => {
     const fetchApps = async () => {
       try {
+        const token = localStorage.getItem("token");
         const res = await getMyApplications(localStorage.getItem("token"));
         setApps(res.data);
       } catch (err) {

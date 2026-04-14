@@ -59,19 +59,16 @@ exports.applyJob = async (req, res) => {
         const jobId = req.params.id;
         const studentId = req.user.id;
 
-        // Check if already applied
         const existingApp = await Application.findOne({ jobId, studentId });
         if (existingApp) {
             return res.status(400).json({ message: "Already applied" });
         }
 
-        // Check job availability
         const job = await Job.findById(jobId);
         if (!job || !job.approved) {
             return res.status(400).json({ message: "Job not available" });
         }
 
-        // Ensure resume exists
         const user = await User.findById(studentId);
         if (!user.resume) {
             return res.status(400).json({ message: "Upload resume first" });
@@ -79,13 +76,12 @@ exports.applyJob = async (req, res) => {
 
         await Application.create({ jobId, studentId });
 
-
         const template = jobAppliedTemplate(user.name, job.title);
 
         await sendMail(
             user.email,
             template.subject,
-            template, html
+            template.html 
         );
 
         res.status(201).json({ message: "Applied successfully" });

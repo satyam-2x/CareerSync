@@ -29,11 +29,10 @@ function DeleteAccount() {
     try {
       setLoading(true);
 
+      const token = localStorage.getItem("token");
       const res = await deleteAccount(
-        { password: password.trim() },
-        localStorage.getItem("token")
-      );
-      
+        { password: password.trim() }, token);
+
       setMessage(res.data.message || "Account deleted");
       setType("success");
 
@@ -65,8 +64,8 @@ function DeleteAccount() {
         {message && (
           <div
             className={`mt-4 p-3 rounded-lg text-sm text-center ${type === "success"
-                ? "bg-green-100 text-green-700"
-                : "bg-red-100 text-red-700"
+              ? "bg-green-100 text-green-700"
+              : "bg-red-100 text-red-700"
               }`}
           >
             {message}

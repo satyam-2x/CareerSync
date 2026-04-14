@@ -6,12 +6,10 @@ const cloudinary = require("../config/cloudinary");
 // --- UPLOAD RESUME ---
 exports.uploadResume = async (req, res) => {
     try {
-        // Check file exists
         if (!req.file) {
             return res.status(400).json({ message: "Resume required" });
         }
 
-        // Allow only PDF files
         if (req.file.mimetype !== "application/pdf") {
             return res.status(400).json({ message: "Only PDF allowed" });
         }
@@ -32,7 +30,6 @@ exports.uploadResume = async (req, res) => {
                 try {
                     const studentId = req.user.id;
 
-                    // Save resume URL in DB
                     const updatedStudent = await User.findByIdAndUpdate(
                         studentId,
                         {
@@ -96,7 +93,6 @@ exports.updateProfile = async (req, res) => {
             return res.status(404).json({ message: "User not found" });
         }
 
-        // Prevent updating sensitive fields
         if (req.body.role || req.body.email || req.body.password) {
             return res.status(400).json({
                 message: "Cannot update role, email or password here"
@@ -105,7 +101,6 @@ exports.updateProfile = async (req, res) => {
 
         user.name = req.body.name || user.name;
 
-        // Update student fields
         if (user.role === "student") {
             user.prn = req.body.prn || user.prn;
             user.course = req.body.course || user.course;
@@ -115,7 +110,6 @@ exports.updateProfile = async (req, res) => {
             user.resume = req.body.resume || user.resume;
         }
 
-        // Update recruiter fields
         if (user.role === "recruiter") {
             user.companyName = req.body.companyName || user.companyName;
             user.companyEmail = req.body.companyEmail || user.companyEmail;
@@ -142,7 +136,6 @@ exports.changePassword = async (req, res) => {
     try {
         const { oldPassword, newPassword } = req.body;
 
-        // Validate inputs
         if (!oldPassword || !newPassword) {
             return res.status(400).json({ message: "All fields required" });
         }
@@ -157,14 +150,12 @@ exports.changePassword = async (req, res) => {
             return res.status(404).json({ message: "User not found" });
         }
 
-        // Verify old password
         const isMatch = await bcrypt.compare(oldPassword, user.password);
 
         if (!isMatch) {
             return res.status(400).json({ message: "Old password is incorrect" });
         }
 
-        // Hash new password
         user.password = await bcrypt.hash(newPassword, 10);
         await user.save();
 
@@ -194,14 +185,12 @@ exports.deleteAccount = async (req, res) => {
             return res.status(404).json({ message: "User not found" });
         }
 
-        // Verify password
         const isMatch = await bcrypt.compare(password, user.password);
 
         if (!isMatch) {
             return res.status(400).json({ message: "Incorrect password" });
         }
 
-        // Delete resume from Cloudinary (if exists)
         if (user.role === "student" && user.resumePublicId) {
             await cloudinary.uploader.destroy(user.resumePublicId, {
                 resource_type: "raw"

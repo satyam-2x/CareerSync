@@ -1,7 +1,6 @@
-
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { getProfile } from "../../services/userService";
+import { getProfile } from "../../services/userService"; // ✅ FIX
 
 function Profile() {
   const [user, setUser] = useState(null);
@@ -22,9 +21,9 @@ function Profile() {
   useEffect(() => {
     const fetchProfile = async () => {
       try {
-        const res = await getProfile(localStorage.getItem("token"));
+        const token = localStorage.getItem("token");
+        const res = await getProfile(token);
         setUser(res.data.user);
-  
       } catch {
         setMessage("Error loading profile");
         setType("error");
@@ -35,11 +34,7 @@ function Profile() {
   }, []);
 
   if (!user)
-    return (
-      <p className="text-center mt-10 text-gray-500">
-        Loading profile...
-      </p>
-    );
+    return <p className="text-center mt-10 text-gray-500">Loading profile...</p>;
 
   const InfoRow = ({ label, value }) => (
     <div className="flex justify-between py-2 border-b">
@@ -50,21 +45,15 @@ function Profile() {
 
   return (
     <div className="min-h-screen bg-gray-100 flex justify-center py-10 px-4">
-
       <div className="bg-white w-full max-w-xl p-6 rounded-2xl shadow-md">
 
         <h2 className="text-2xl font-semibold text-center text-gray-800">
           My Profile
         </h2>
 
-        {/* Message */}
         {message && (
-          <div
-            className={`mt-4 p-3 rounded-lg text-sm text-center ${type === "success"
-                ? "bg-green-100 text-green-700"
-                : "bg-red-100 text-red-700"
-              }`}
-          >
+          <div className={`mt-4 p-3 rounded-lg text-sm text-center ${type === "success" ? "bg-green-100 text-green-700" : "bg-red-100 text-red-700"
+            }`}>
             {message}
           </div>
         )}
@@ -97,32 +86,18 @@ function Profile() {
           </div>
         )}
 
-
-
-
         {user.role !== "admin" && (
-          <button
-            onClick={() => navigate("/update-profile")}
-            className="w-full bg-blue-600 text-white py-2 rounded-lg mt-6 hover:bg-blue-700 transition"
-          >
+          <button onClick={() => navigate("/update-profile")} className="w-full bg-blue-600 text-white py-2 rounded-lg mt-6">
             Edit Profile
           </button>
         )}
 
-
-        <button
-          onClick={() => navigate("/change-password")}
-          className="w-full text-sm text-gray-500 mt-3 hover:underline"
-        >
+        <button onClick={() => navigate("/change-password")} className="w-full text-sm text-gray-500 mt-3">
           Change Password
         </button>
 
-
         {user.role !== "admin" && (
-          <button
-            onClick={() => navigate("/delete-account")}
-            className="w-full text-sm text-red-500 mt-2 hover:underline"
-          >
+          <button onClick={() => navigate("/delete-account")} className="w-full text-sm text-red-500 mt-2">
             Delete Account
           </button>
         )}
