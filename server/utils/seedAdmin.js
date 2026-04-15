@@ -17,7 +17,8 @@ const seedAdmin = async () => {
                 email: process.env.ADMIN_EMAIL,
                 password: hashedPassword,
                 role: "admin",
-                isVerified: true
+                isVerified: true,
+                verified: true
             });
 
             console.log("Admin account created successfully!");
