@@ -1,6 +1,7 @@
 # CareerSync
 
 🌐 Live Demo: https://career-sync-psi.vercel.app
+
 💻 GitHub Repo: https://github.com/satyam-2x/CareerSync
 
 ## 🎯 Description
