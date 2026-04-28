@@ -38,7 +38,7 @@ exports.signup = async (req, res) => {
 
         const newUser = await User.create({
             name,
-            email: email.toLowerCase(), // already correct
+            email: email.toLowerCase(), 
             password: hashPassword,
             role: role || "student",
             companyEmail,
