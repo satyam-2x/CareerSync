@@ -5,7 +5,7 @@ import ProtectedRoute from "../components/ProtectedRoute";
 import Footer from "../components/Footer";
 import Home from "../components/Home";
 
-// ---------- Auth Pages ----------
+// ---------- Auth ----------
 import Login from "../pages/Auth/Login";
 import Signup from "../pages/Auth/Signup";
 import ForgotPassword from "../pages/Auth/ForgotPassword";
