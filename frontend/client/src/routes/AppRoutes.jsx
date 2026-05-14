@@ -4,6 +4,7 @@ import Navbar from "../components/Navbar";
 import ProtectedRoute from "../components/ProtectedRoute";
 import Footer from "../components/Footer";
 import Home from "../components/Home";
+import PublicRoute from "../components/PublicRoute";
 
 // ---------- Auth ----------
 import Login from "../pages/Auth/Login";
@@ -15,7 +16,7 @@ import VerifyOtp from "../pages/Auth/VerifyOtp";
 // ---------- Jobs (Student) ----------
 import Jobs from "../pages/Jobs/Jobs";
 import JobDetails from "../pages/Jobs/JobDetails";
-import MyApplications from "../pages/Jobs/MyApplication"; 
+import MyApplications from "../pages/Jobs/MyApplication";
 
 // ---------- Profile ----------
 import Profile from "../pages/Profile/Profile";
@@ -43,13 +44,13 @@ import Stats from "../pages/TPO/Stats";
 function AppRoutes() {
   return (
     <BrowserRouter>
-      
-      
+
+
       <div className="flex flex-col min-h-screen">
 
         <Navbar />
 
-      
+
         <main className="flex-grow">
           <Routes>
             {/* ---------- Public Routes ---------- */}
@@ -58,11 +59,50 @@ function AppRoutes() {
             <Route path="/jobs/:id" element={<JobDetails />} />
 
             {/* ---------- Auth Routes ---------- */}
-            <Route path="/login" element={<Login />} />
-            <Route path="/signup" element={<Signup />} />
-            <Route path="/forgot-password" element={<ForgotPassword />} />
-            <Route path="/reset-password" element={<ResetPassword />} />
-            <Route path="/verify-otp" element={<VerifyOtp />} />
+            <Route
+              path="/login"
+              element={
+                <PublicRoute>
+                  <Login />
+                </PublicRoute>
+              }
+            />
+
+            <Route
+              path="/signup"
+              element={
+                <PublicRoute>
+                  <Signup />
+                </PublicRoute>
+              }
+            />
+
+            <Route
+              path="/forgot-password"
+              element={
+                <PublicRoute>
+                  <ForgotPassword />
+                </PublicRoute>
+              }
+            />
+
+            <Route
+              path="/reset-password"
+              element={
+                <PublicRoute>
+                  <ResetPassword />
+                </PublicRoute>
+              }
+            />
+
+            <Route
+              path="/verify-otp"
+              element={
+                <PublicRoute>
+                  <VerifyOtp />
+                </PublicRoute>
+              }
+            />
 
             {/* ---------- Student Routes ---------- */}
             <Route
@@ -222,7 +262,7 @@ function AppRoutes() {
             />
 
             <Route path="*" element={<Navigate to="/" />} />
-            
+
           </Routes>
         </main>
 

@@ -1,9 +1,11 @@
 import { Link } from "react-router-dom";
 
 function Home() {
+  const user = JSON.parse(localStorage.getItem("user"));
+
   return (
     <div className="min-h-screen flex flex-col bg-gradient-to-br from-slate-50 to-blue-100">
-      
+
       {/* Main Content */}
       <div className="flex-1 flex items-center justify-center px-6 py-20">
         <div className="max-w-5xl w-full text-center">
@@ -28,11 +30,13 @@ function Home() {
               </button>
             </Link>
 
-            <Link to="/signup">
-              <button className="w-full sm:w-auto bg-white text-slate-700 border px-8 py-3 rounded-full font-semibold hover:bg-slate-50 transition">
-                Create Account
-              </button>
-            </Link>
+            {!user && (
+              <Link to="/signup">
+                <button className="w-full sm:w-auto bg-white text-slate-700 border px-8 py-3 rounded-full font-semibold hover:bg-slate-50 transition">
+                  Create Account
+                </button>
+              </Link>
+            )}
           </div>
 
           {/* Features */}
