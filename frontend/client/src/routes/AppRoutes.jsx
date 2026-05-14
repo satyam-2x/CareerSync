@@ -1,5 +1,5 @@
 
-import { BrowserRouter, Routes, Route } from "react-router-dom";
+import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import Navbar from "../components/Navbar";
 import ProtectedRoute from "../components/ProtectedRoute";
 import Footer from "../components/Footer";
@@ -220,6 +220,9 @@ function AppRoutes() {
                 </ProtectedRoute>
               }
             />
+
+            <Route path="*" element={<Navigate to="/" />} />
+            
           </Routes>
         </main>
 
