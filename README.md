@@ -61,6 +61,20 @@ It was built to solve the problem of lost links and missed opportunities by cent
 - Render (Backend Hosting)
 - Postman (API Testing)
 
+---
+
+## 🚀 CareerSync in Action
+
+### 🏠 Home Page
+![Home](./screenshots/home.png)
+
+### 🎓 Student Dashboard
+![Student Dashboard](./screenshots/student-dashboard.png)
+
+### 💼 Recruiter Dashboard
+![Recruiter Dashboard](./screenshots/recruiter-dashboard.png)
+
+---
 
 ## ⚙️ Installation
 
