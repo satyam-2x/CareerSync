@@ -9,6 +9,7 @@ const userRoutes = require("./routes/userRoutes");
 const jobRoutes = require("./routes/jobRoutes");
 const recruiterRoutes = require("./routes/recruiterRoutes");
 const tpoRoutes = require("./routes/tpoRoutes");
+const chatRoutes = require("./routes/chatRoute");
 
 // Config
 const connectDB = require("./config/db");
@@ -44,7 +45,7 @@ const limiter = rateLimit({
     message: "Too many requests, try again later"
 });
 
-app.use("/api", limiter); 
+app.use("/api", limiter);
 
 
 // --- ROUTES ---
@@ -54,7 +55,7 @@ app.use("/api/users", userRoutes);
 app.use("/api/jobs", jobRoutes);
 app.use("/api/recruiter", recruiterRoutes);
 app.use("/api/admin", tpoRoutes);
-
+app.use("/api/chat", chatRoutes);
 
 // --- SERVER ---
 

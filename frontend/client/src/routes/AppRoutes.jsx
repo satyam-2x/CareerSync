@@ -5,6 +5,7 @@ import ProtectedRoute from "../components/ProtectedRoute";
 import Footer from "../components/Footer";
 import Home from "../components/Home";
 import PublicRoute from "../components/PublicRoute";
+import ChatBot from "../components/ChatBot";
 
 // ---------- Auth ----------
 import Login from "../pages/Auth/Login";
@@ -265,7 +266,8 @@ function AppRoutes() {
 
           </Routes>
         </main>
-
+        
+        <ChatBot />
         <Footer />
 
       </div>

@@ -1,3 +1,4 @@
+const jwt = require("jsonwebtoken");
 // --- ROLE AUTHORIZATION ---
 
 exports.authorizeRoles = (...roles) => {
@@ -56,4 +57,24 @@ exports.isAdmin = (req, res, next) => {
     }
 
     next();
+};
+
+// Optional authentication middleware
+exports.optionalAuth = (req, res, next) => {
+    try {
+        const authHeader = req.headers.authorization;
+
+        if (authHeader && authHeader.startsWith("Bearer ")) {
+            const token = authHeader.split(" ")[1];
+
+            const decoded = jwt.verify(token, process.env.JWT_SECRET);
+
+            req.user = decoded;
+        }
+
+        next();
+
+    } catch (error) {
+        next();
+    }
 };
