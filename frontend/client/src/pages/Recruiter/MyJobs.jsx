@@ -11,6 +11,9 @@ function MyJobs() {
   const [message, setMessage] = useState("");
   const [type, setType] = useState("");
   const [deleteId, setDeleteId] = useState(null);
+  const [search, setSearch] = useState("");
+  const [status, setStatus] = useState("");
+  const [jobType, setJobType] = useState("");
 
   // Auto-clear message
   useEffect(() => {
@@ -23,23 +26,35 @@ function MyJobs() {
     }
   }, [message]);
 
-  // Fetch jobs
   useEffect(() => {
-    const fetchJobs = async () => {
-      try {
-        const token = localStorage.getItem("token");
-        const res = await getMyJobs(token);
-        setJobs(res.data.jobs);
-      } catch {
-        setMessage("Error loading jobs");
-        setType("error");
-      } finally {
-        setLoading(false);
-      }
-    };
+    const timer = setTimeout(() => {
+      fetchJobs();
+    }, 500);
 
-    fetchJobs();
-  }, []);
+    return () => clearTimeout(timer);
+  }, [search, status, jobType]);
+
+  // Fetch jobs
+  const fetchJobs = async () => {
+    try {
+      const token = localStorage.getItem("token");
+
+      const res = await getMyJobs(
+        token,
+        search,
+        status,
+        jobType
+      );
+
+      setJobs(res.data.jobs);
+
+    } catch (error) {
+      setMessage(error.response?.data?.message || "Error loading jobs");
+      setType("error");
+    } finally {
+      setLoading(false);
+    }
+  }
 
   // Delete job
   const confirmDelete = async () => {
@@ -51,8 +66,8 @@ function MyJobs() {
       setMessage("Job deleted");
       setType("success");
 
-    } catch (err) {
-      setMessage(err.response?.data?.message || "Error deleting job");
+    } catch (error) {
+      setMessage(error.response?.data?.message || "Error deleting job");
       setType("error");
 
     } finally {
@@ -72,10 +87,41 @@ function MyJobs() {
           My Jobs
         </h2>
 
+        <div className="mt-4 flex gap-3 flex-wrap">
+          <input
+            type="text"
+            placeholder="Search Jobs..."
+            value={search}
+            onChange={(e) => setSearch(e.target.value)}
+            className="flex-1 border rounded-lg px-3 py-2"
+          />
+
+          <select
+            value={status}
+            onChange={(e) => setStatus(e.target.value)}
+            className="border rounded-lg px-3 py-2"
+          >
+            <option value="">All Status</option>
+            <option value="open">Open</option>
+            <option value="closed">Closed</option>
+            <option value="expired">Expired</option>
+          </select>
+
+          <select
+            value={jobType}
+            onChange={(e) => setJobType(e.target.value)}
+            className="border rounded-lg px-3 py-2"
+          >
+            <option value="">All Types</option>
+            <option value="full-time">Full-Time</option>
+            <option value="internship">Internship</option>
+            <option value="remote">Remote</option>
+          </select>
+
+        </div>
         {message && (
-          <div className={`mt-4 p-3 rounded-lg text-sm text-center ${
-            type === "success" ? "bg-green-100 text-green-700" : "bg-red-100 text-red-700"
-          }`}>
+          <div className={`mt-4 p-3 rounded-lg text-sm text-center ${type === "success" ? "bg-green-100 text-green-700" : "bg-red-100 text-red-700"
+            }`}>
             {message}
           </div>
         )}
@@ -129,7 +175,7 @@ function MyJobs() {
         )}
       </div>
 
-      {/* Delete Modal */}
+      {/* Delete Model */}
       {deleteId && (
         <div className="fixed inset-0 bg-black/40 flex items-center justify-center">
           <div className="bg-white p-6 rounded-xl w-80 text-center">

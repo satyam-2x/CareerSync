@@ -10,7 +10,7 @@ exports.postJob = async (req, res) => {
         const recruiter = await User.findById(req.user.id);
 
         // Check recruiter verification
-        if (!recruiter.verified) { 
+        if (!recruiter.verified) {
             return res.status(403).json({
                 message: "Only verified recruiters can post jobs"
             });
@@ -49,14 +49,33 @@ exports.postJob = async (req, res) => {
 // --- GET MY JOBS ---
 exports.getMyJobs = async (req, res) => {
     try {
-        const jobs = await Job.find({ recruiterId: req.user.id });
+        const { search, status, jobType } = req.query;
+
+        let query = { recruiterId: req.user.id };
+
+        if (search) {
+            query.title = {
+                $regex: search,
+                $options: "i"
+            };
+        }
+
+        if (status) {
+            query.status = status;
+        }
+
+        if (jobType) {
+            query.jobType = jobType;
+        }
+
+        const jobs = await Job.find(query);
 
         res.status(200).json({
-            success: true,
             jobs
         });
+
     } catch (error) {
-        console.log(error);
+        console.error(error);
         res.status(500).json({ message: "Error fetching jobs" });
     }
 };
@@ -193,18 +212,18 @@ exports.updateApplicationStatus = async (req, res) => {
 
 // --- GET JOB BY ID ---
 exports.getRecruiterJobById = async (req, res) => {
-  try {
-    const job = await Job.findOne({
-      _id: req.params.id,
-      recruiterId: req.user.id
-    });
+    try {
+        const job = await Job.findOne({
+            _id: req.params.id,
+            recruiterId: req.user.id
+        });
 
-    if (!job) {
-      return res.status(404).json({ message: "Job not found" });
+        if (!job) {
+            return res.status(404).json({ message: "Job not found" });
+        }
+
+        res.json(job);
+    } catch (error) {
+        res.status(500).json({ message: "Error fetching job" });
     }
-
-    res.json(job);
-  } catch (error) {
-    res.status(500).json({ message: "Error fetching job" });
-  }
 };

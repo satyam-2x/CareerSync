@@ -4,8 +4,13 @@ import API from "../api";
 // --- Jobs Management ---
 
 // Fetch recruiter's jobs
-export const getMyJobs = (token) =>
+export const getMyJobs = (token, search, status, jobType) =>
     API.get("/api/recruiter/jobs", {
+        params: {
+            search,
+            status,
+            jobType
+        },
         headers: { Authorization: `Bearer ${token}` },
     });
 
