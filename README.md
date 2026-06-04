@@ -41,6 +41,15 @@ It was built to solve the problem of lost links and missed opportunities by cent
 
 ---
 
+### 🤖 AI Career Assistant
+- **Role-Based AI Support:** Different responses for Students, Recruiters, Admin, and Guest users.
+- **Career Guidance:** Resume tips, interview preparation, aptitude, communication skills, and DSA guidance.
+- **CareerSync Assistance:** Helps users understand platform features and workflows.
+- **Smart Restrictions:** Refuses unrelated topics and stays focused on career and placement-related queries.
+
+---
+
+
 ## 🛠️ Tech Stack
 
 ### Frontend
@@ -113,6 +122,7 @@ Create a `.env` file inside the server folder and add:
 PORT=5000
 MONGO_URI=your_mongodb_uri
 JWT_SECRET=your_jwt_secret
+GEMINI_API_KEY=your_gemini_api_key
 
 # Cloudinary
 CLOUDINARY_CLOUD_NAME=your_cloud_name
