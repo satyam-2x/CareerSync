@@ -16,8 +16,11 @@ const userSchema = new mongoose.Schema({
     password: {
         type: String,
         required: true,
-        minlength: 6,
-        match: [/(?=.*[!@#$%^&*])/, "Password must contain at least 1 symbol"]
+        minlength: 8,
+        match: [
+            /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[!@#$%^&*])/,
+            "Password must contain uppercase, lowercase, number and symbol"
+        ]
     },
 
     // --- ROLE ---
@@ -73,7 +76,7 @@ const userSchema = new mongoose.Schema({
     // --- EMAIL OTP VERIFICATION ---
     otp: { type: String },
     otpExpire: { type: Date },
-    isVerified: { type: Boolean, default: false } 
+    isVerified: { type: Boolean, default: false }
 }, { timestamps: true });
 
 module.exports = mongoose.model("User", userSchema);

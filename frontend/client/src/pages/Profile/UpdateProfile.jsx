@@ -13,6 +13,9 @@ const CustomInput = ({
   value,
   onChange,
   readOnly,
+  min,
+  max,
+  step,
 }) => (
   <input
     name={name}
@@ -21,9 +24,11 @@ const CustomInput = ({
     value={value || ""}
     onChange={onChange}
     readOnly={readOnly}
-    className={`w-full border px-4 py-2 rounded-lg mt-2 focus:outline-none focus:ring-2 focus:ring-blue-500 ${
-      readOnly ? "bg-gray-50 cursor-default" : ""
-    }`}
+    min={min}
+    max={max}
+    step={step}
+    className={`w-full border px-4 py-2 rounded-lg mt-2 focus:outline-none focus:ring-2 focus:ring-blue-500 ${readOnly ? "bg-gray-50 cursor-default" : ""
+      }`}
   />
 );
 
@@ -69,9 +74,23 @@ function UpdateProfile() {
 
   // Handle input change
   const handleChange = (e) => {
+    const { name, value } = e.target;
+
+    if (name === "semester" && (value < 1 || value > 8)) return;
+
+    if (name === "cgpa" && (value < 0 || value > 10)) return;
+
+    if (name === "course" && !/^[A-Za-z\s]*$/.test(value)) return;
+
+    if (name === "branch" && !/^[A-Za-z\s]*$/.test(value)) return;
+
+    if (name === "prn" && !/^\d*$/.test(value) || value.length > 12 ) return;
+
+    if (name === "contactNumber" && !/^\d*$/.test(value) || value.length > 10 ) return;
+    
     setForm((prev) => ({
       ...prev,
-      [e.target.name]: e.target.value,
+      [name]: value,
     }));
   };
 
@@ -190,11 +209,10 @@ function UpdateProfile() {
         </h2>
 
         {message && (
-          <div className={`mt-4 p-3 rounded-lg text-sm text-center ${
-            type === "success"
+          <div className={`mt-4 p-3 rounded-lg text-sm text-center ${type === "success"
               ? "bg-green-100 text-green-700"
               : "bg-red-100 text-red-700"
-          }`}>
+            }`}>
             {message}
           </div>
         )}
@@ -209,8 +227,26 @@ function UpdateProfile() {
             <CustomInput name="prn" placeholder="PRN *" value={form.prn} onChange={handleChange} />
             <CustomInput name="course" placeholder="Course *" value={form.course} onChange={handleChange} />
             <CustomInput name="branch" placeholder="Branch *" value={form.branch} onChange={handleChange} />
-            <CustomInput name="semester" type="number" placeholder="Semester" value={form.semester} onChange={handleChange} />
-            <CustomInput name="cgpa" placeholder="CGPA *" value={form.cgpa} onChange={handleChange} />
+
+            <CustomInput
+              name="semester"
+              type="number"
+              placeholder="Semester"
+              min="1"
+              max="8"
+              step="1"
+              value={form.semester} 
+              onChange={handleChange} />
+
+            <CustomInput
+              name="cgpa"
+              type="number"
+              placeholder="CGPA *"
+              min="0"
+              max="10"
+              step="0.01"
+              value={form.cgpa}
+              onChange={handleChange} />
 
             <input
               type="file"

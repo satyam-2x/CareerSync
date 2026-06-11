@@ -36,7 +36,7 @@ exports.uploadResume = async (req, res) => {
                             resume: result.secure_url,
                             resumePublicId: result.public_id
                         },
-                        { new: true }
+                        { returnDocument: "after" }
                     );
 
                     return res.status(200).json({
@@ -126,6 +126,10 @@ exports.updateProfile = async (req, res) => {
         });
 
     } catch (error) {
+        console.log(error).res.status(500).json({
+            success: false,
+            error: error.message
+        })
         res.status(500).json({ message: "Error updating profile" });
     }
 };
@@ -137,11 +141,25 @@ exports.changePassword = async (req, res) => {
         const { oldPassword, newPassword } = req.body;
 
         if (!oldPassword || !newPassword) {
-            return res.status(400).json({ message: "All fields required" });
+            return res.status(400).json({
+                message: "All fields required"
+            });
         }
 
-        if (newPassword.length < 6) {
-            return res.status(400).json({ message: "Password must be at least 6 characters" });
+        if (oldPassword === newPassword) {
+            return res.status(400).json({
+                message: "New password must be different from old password"
+            });
+        }
+
+        if (newPassword.length < 8) {
+            return res.status(400).json({ message: "Password must be at least 8 characters" });
+        }
+
+        if (!/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[!@#$%^&*])/.test(newPassword)) {
+            return res.status(400).json({
+                message: "Password must contain uppercase, lowercase, number and symbol"
+            });
         }
 
         const user = await User.findById(req.user.id);
@@ -175,7 +193,7 @@ exports.deleteAccount = async (req, res) => {
     try {
         const { password } = req.body;
 
-        if (!password) {
+        if (!password.trim()) {
             return res.status(400).json({ message: "Password required" });
         }
 

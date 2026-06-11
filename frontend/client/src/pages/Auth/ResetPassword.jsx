@@ -10,6 +10,7 @@ function ResetPassword() {
   // State management
   const [message, setMessage] = useState("");
   const [type, setType] = useState("");
+  const [passwordStrength, setPasswordStrength] = useState("");
   const [loading, setLoading] = useState(false);
   const [form, setForm] = useState({
     email: emailFromState || "",
@@ -30,13 +31,53 @@ function ResetPassword() {
 
   // Handle input change
   const handleChange = (e) => {
-    setForm({ ...form, [e.target.name]: e.target.value });
+    const { name, value } = e.target;
+
+    if (name === "otp" && !/^\d*$/.test(value)) {
+      return;
+    }
+
+    if (name === "password") {
+      if (value.length < 8) {
+        setPasswordStrength("Weak");
+      } else if (
+        /(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[!@#$%^&*])/.test(value)
+      ) {
+        setPasswordStrength("Strong");
+      } else {
+        setPasswordStrength("Medium");
+      }
+    }
+
+    setForm({ ...form, [name]: value });
   };
 
   // Handle reset password
   const handleSubmit = async () => {
     if (!form.otp || !form.password) {
       setMessage("Please fill all fields");
+      setType("error");
+      return;
+    }
+
+    if (!/^\d{6}$/.test(form.otp)) {
+      setMessage("Please enter a valid 6-digit OTP");
+      setType("error");
+      return;
+    }
+
+    if (form.password.length < 8) {
+      setMessage("Password must be at least 8 characters");
+      setType("error");
+      return;
+    }
+
+    if (
+      !/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[!@#$%^&*])/.test(form.password)
+    ) {
+      setMessage(
+        "Password must contain uppercase, lowercase, number and symbol"
+      );
       setType("error");
       return;
     }
@@ -72,9 +113,8 @@ function ResetPassword() {
         </h2>
 
         {message && (
-          <p className={`mb-3 text-sm text-center ${
-            type === "error" ? "text-red-500" : "text-green-600"
-          }`}>
+          <p className={`mb-3 text-sm text-center ${type === "error" ? "text-red-500" : "text-green-600"
+            }`}>
             {message}
           </p>
         )}
@@ -90,6 +130,7 @@ function ResetPassword() {
           type="text"
           name="otp"
           placeholder="Enter OTP"
+          maxLength={6}
           onChange={handleChange}
           className="w-full border p-2 rounded mb-3 focus:outline-none focus:ring-2 focus:ring-blue-400"
         />
@@ -101,6 +142,17 @@ function ResetPassword() {
           onChange={handleChange}
           className="w-full border p-2 rounded mb-4 focus:outline-none focus:ring-2 focus:ring-blue-400"
         />
+
+        <p
+          className={`text-sm mt-1 ${passwordStrength === "Weak"
+            ? "text-red-500"
+            : passwordStrength === "Medium"
+              ? "text-yellow-500"
+              : "text-green-600"
+            }`}
+        >
+          {passwordStrength && `Password Strength: ${passwordStrength}`}
+        </p>
 
         <button
           onClick={handleSubmit}

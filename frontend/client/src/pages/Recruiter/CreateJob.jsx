@@ -35,12 +35,34 @@ function CreateJob() {
   }, [message]);
 
   const handleChange = (e) => {
-    setForm({ ...form, [e.target.name]: e.target.value });
+    const { name, value } = e.target;
+
+    if (name === "location" && !/^[A-Za-z\s,]*$/.test(value)) return;
+
+    setForm({ ...form, [name]: value });
   };
 
   const handleSubmit = async () => {
     if (!form.title || !form.description || !form.salary || !form.location || !form.deadline) {
       setMessage("Please fill all required fields");
+      setType("error");
+      return;
+    }
+
+    if (form.title.trim().length < 3) {
+      setMessage("Job title must be at least 3 characters");
+      setType("error");
+      return;
+    }
+
+    if (form.location.trim().length < 2) {
+      setMessage("Please enter a valid location");
+      setType("error");
+      return;
+    }
+
+    if (form.minCgpa && (form.minCgpa < 0 || form.minCgpa > 10)) {
+      setMessage("CGPA must be between 0 and 10");
       setType("error");
       return;
     }
@@ -138,6 +160,8 @@ function CreateJob() {
         <div className="grid grid-cols-2 gap-3 mt-3">
           <input
             type="number"
+            min="0"
+            max="10"
             step="0.01"
             className="w-full border px-4 py-2 rounded-lg focus:ring-2 focus:ring-blue-500"
             name="minCgpa"
@@ -189,6 +213,7 @@ function CreateJob() {
         <input
           type="date"
           name="deadline"
+          min={new Date().toISOString().split("T")[0]}
           value={form.deadline}
           onChange={handleChange}
           className="w-full border px-4 py-2 rounded-lg mt-3"

@@ -9,7 +9,12 @@ const jobSchema = new mongoose.Schema({
     salary: { type: String },
     location: { type: String },
 
-    minCgpa: { type: Number, default: 0 },
+    minCgpa: {
+        type: Number,
+        min: 0,
+        max: 10,
+        default: 0
+    },
 
     eligibleBatch: [{ type: String }],
     eligibleBranches: [{ type: String }],

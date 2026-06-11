@@ -12,6 +12,7 @@ function ChangePassword() {
   });
   const [loading, setLoading] = useState(false);
   const [message, setMessage] = useState("");
+  const [passwordStrength, setPasswordStrength] = useState("");
   const [type, setType] = useState("");
 
   // Auto-clear message
@@ -27,7 +28,21 @@ function ChangePassword() {
 
   // Handle input
   const handleChange = (e) => {
-    setForm({ ...form, [e.target.name]: e.target.value });
+    const { name, value } = e.target;
+
+    if (name === "newPassword") {
+      if (value.length < 8) {
+        setPasswordStrength("Weak");
+      } else if (
+        /(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[!@#$%^&*])/.test(value)
+      ) {
+        setPasswordStrength("Strong");
+      } else {
+        setPasswordStrength("Medium");
+      }
+    }
+
+    setForm({ ...form, [name]: value });
   };
 
   // Handle submit
@@ -38,8 +53,18 @@ function ChangePassword() {
       return;
     }
 
-    if (form.newPassword.length < 6) {
-      setMessage("Password must be at least 6 characters");
+    if (form.newPassword.length < 8) {
+      setMessage("Password must be at least 8 characters");
+      setType("error");
+      return;
+    }
+
+    if (
+      !/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[!@#$%^&*])/.test(form.newPassword)
+    ) {
+      setMessage(
+        "Password must contain uppercase, lowercase, number and symbol"
+      );
       setType("error");
       return;
     }
@@ -102,6 +127,17 @@ function ChangePassword() {
           onChange={handleChange}
           className="w-full border px-4 py-2 rounded-lg mt-3"
         />
+
+        <p
+          className={`text-sm mt-1 ${passwordStrength === "Weak"
+              ? "text-red-500"
+              : passwordStrength === "Medium"
+                ? "text-yellow-500"
+                : "text-green-600"
+            }`}
+        >
+          {passwordStrength && `Password Strength: ${passwordStrength}`}
+        </p>
 
         <button
           onClick={handleSubmit}

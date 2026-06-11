@@ -45,7 +45,7 @@ function EditJob() {
         const token = localStorage.getItem("token");
 
         const res = await getRecruiterJobById(id, token);
-        
+
         const job = res.data;
         setForm({
           title: job.title || "",
@@ -73,12 +73,34 @@ function EditJob() {
   }, [id]);
 
   const handleChange = (e) => {
-    setForm({ ...form, [e.target.name]: e.target.value });
+    const { name, value } = e.target;
+
+    if (name === "location" && !/^[A-Za-z\s,]*$/.test(value)) return;
+
+    setForm({ ...form, [name]: value });
   };
 
   const handleUpdate = async () => {
     if (!form.title || !form.description || !form.salary || !form.location) {
       setMessage("Please fill required fields");
+      setType("error");
+      return;
+    }
+
+    if (form.title.trim().length < 3) {
+      setMessage("Job title must be at least 3 characters");
+      setType("error");
+      return;
+    }
+
+    if (form.location.trim().length < 2) {
+      setMessage("Please enter a valid location");
+      setType("error");
+      return;
+    }
+
+    if (form.minCgpa && (form.minCgpa < 0 || form.minCgpa > 10)) {
+      setMessage("CGPA must be between 0 and 10");
       setType("error");
       return;
     }
@@ -148,7 +170,7 @@ function EditJob() {
           <div className="grid grid-cols-2 gap-3">
             <div>
               <label className="text-xs font-bold text-gray-500 uppercase">Min CGPA</label>
-              <input type="number" step="0.01" className="w-full border px-4 py-2 rounded-lg focus:ring-2 focus:ring-blue-500" name="minCgpa" value={form.minCgpa} onChange={handleChange} placeholder="e.g. 7.5" />
+              <input type="number" min="0" max="10" step="0.01" className="w-full border px-4 py-2 rounded-lg focus:ring-2 focus:ring-blue-500" name="minCgpa" value={form.minCgpa} onChange={handleChange} placeholder="e.g. 7.5" />
             </div>
             <div>
               <label className="text-xs font-bold text-gray-500 uppercase">Batch</label>
@@ -179,7 +201,7 @@ function EditJob() {
           </div>
 
           <label className="text-xs font-bold text-gray-500 uppercase">Deadline</label>
-          <input type="date" name="deadline" value={form.deadline} onChange={handleChange} className="w-full border px-4 py-2 rounded-lg" />
+          <input type="date" name="deadline" min={new Date().toISOString().split("T")[0]} value={form.deadline} onChange={handleChange} className="w-full border px-4 py-2 rounded-lg" />
         </div>
 
         <button onClick={handleUpdate} disabled={updating} className="w-full bg-blue-600 text-white py-2 rounded-lg mt-6">

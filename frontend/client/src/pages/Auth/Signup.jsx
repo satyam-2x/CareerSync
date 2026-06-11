@@ -8,6 +8,7 @@ function Signup() {
   // State management
   const [message, setMessage] = useState("");
   const [type, setType] = useState("");
+  const [passwordStrength, setPasswordStrength] = useState("");
   const [loading, setLoading] = useState(false);
   const [form, setForm] = useState({
     name: "",
@@ -30,7 +31,25 @@ function Signup() {
 
   // Handle input change
   const handleChange = (e) => {
-    setForm({ ...form, [e.target.name]: e.target.value });
+    const { name, value } = e.target;
+
+    if (name === "name" && !/^[A-Za-z\s]*$/.test(value)) {
+      return;
+    }
+
+    if (name === "password") {
+      if (value.length < 8) {
+        setPasswordStrength("Weak");
+      } else if (
+        /(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[!@#$%^&*])/.test(value)
+      ) {
+        setPasswordStrength("Strong");
+      } else {
+        setPasswordStrength("Medium");
+      }
+    }
+
+    setForm({ ...form, [name]: value });
   };
 
   // Handle signup submission
@@ -39,6 +58,41 @@ function Signup() {
 
     if (!form.name || !form.email || !form.password) {
       setMessage("Please fill all fields");
+      setType("error");
+      return;
+    }
+
+    if (!/^[A-Za-z\s]+$/.test(form.name)) {
+      setMessage("Name can contain only letters");
+      setType("error");
+      return;
+    }
+
+    const emailRegex = /^\S+@\S+\.\S+$/;
+
+    if (!emailRegex.test(form.email)) {
+      setMessage("Please enter a valid email");
+      setType("error");
+      return;
+    }
+
+    if (
+      form.role === "recruiter" &&
+      !emailRegex.test(form.companyEmail)
+    ) {
+      setMessage("Please enter a valid company email");
+      setType("error");
+      return;
+    }
+
+    if (form.password.length < 8) {
+      setMessage("Password must be at least 8 characters");
+      setType("error");
+      return;
+    }
+
+    if (!/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[!@#$%^&*])/.test(form.password)) {
+      setMessage("Password must contain uppercase, lowercase, number and symbol");
       setType("error");
       return;
     }
@@ -77,11 +131,10 @@ function Signup() {
 
         {message && (
           <div
-            className={`mt-4 p-3 rounded-lg text-sm text-center ${
-              type === "success"
-                ? "bg-green-100 text-green-700"
-                : "bg-red-100 text-red-700"
-            }`}
+            className={`mt-4 p-3 rounded-lg text-sm text-center ${type === "success"
+              ? "bg-green-100 text-green-700"
+              : "bg-red-100 text-red-700"
+              }`}
           >
             {message}
           </div>
@@ -90,6 +143,7 @@ function Signup() {
         <input
           className="w-full border px-4 py-2 rounded-lg mt-4 focus:outline-none focus:ring-2 focus:ring-blue-500"
           name="name"
+          type="text"
           placeholder="Name"
           onChange={handleChange}
         />
@@ -97,6 +151,7 @@ function Signup() {
         <input
           className="w-full border px-4 py-2 rounded-lg mt-3 focus:outline-none focus:ring-2 focus:ring-blue-500"
           name="email"
+          type="email"
           placeholder="Email"
           onChange={handleChange}
         />
@@ -108,6 +163,17 @@ function Signup() {
           placeholder="Password"
           onChange={handleChange}
         />
+
+        <p
+          className={`text-sm mt-1 ${passwordStrength === "Weak"
+              ? "text-red-500"
+              : passwordStrength === "Medium"
+                ? "text-yellow-500"
+                : "text-green-600"
+            }`}
+        >
+          {passwordStrength && `Password Strength: ${passwordStrength}`}
+        </p>
 
         <select
           name="role"
@@ -122,6 +188,7 @@ function Signup() {
           <input
             className="w-full border px-4 py-2 rounded-lg mt-3 focus:outline-none focus:ring-2 focus:ring-blue-500"
             name="companyEmail"
+            type="email"
             placeholder="Company Email"
             onChange={handleChange}
           />

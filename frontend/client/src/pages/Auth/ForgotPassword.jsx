@@ -32,6 +32,14 @@ function ForgotPassword() {
       return;
     }
 
+    const emailRegex = /^\S+@\S+\.\S+$/;
+
+    if (!emailRegex.test(email)) {
+      setMessage("Please enter a valid email");
+      setType("error");
+      return;
+    }
+
     try {
       setLoading(true);
 
@@ -64,9 +72,8 @@ function ForgotPassword() {
 
         {message && (
           <p
-            className={`mb-3 text-sm text-center ${
-              type === "error" ? "text-red-500" : "text-green-600"
-            }`}
+            className={`mb-3 text-sm text-center ${type === "error" ? "text-red-500" : "text-green-600"
+              }`}
           >
             {message}
           </p>

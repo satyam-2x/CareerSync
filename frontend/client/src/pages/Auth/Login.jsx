@@ -38,6 +38,13 @@ function Login() {
       return;
     }
 
+    const emailRegex = /^\S+@\S+\.\S+$/;
+    if (!emailRegex.test(form.email)) {
+      setMessage("Please enter a valid email");
+      setType("error");
+      return;
+    }
+
     try {
       setLoading(true);
 
@@ -78,11 +85,10 @@ function Login() {
 
         {message && (
           <div
-            className={`mt-4 p-3 rounded-lg text-sm text-center ${
-              type === "success"
-                ? "bg-green-100 text-green-700"
-                : "bg-red-100 text-red-700"
-            }`}
+            className={`mt-4 p-3 rounded-lg text-sm text-center ${type === "success"
+              ? "bg-green-100 text-green-700"
+              : "bg-red-100 text-red-700"
+              }`}
           >
             {message}
           </div>
@@ -91,6 +97,7 @@ function Login() {
         <div className="mt-6 space-y-4">
           <input
             name="email"
+            type="email"
             placeholder="Email"
             onChange={handleChange}
             className="w-full border px-4 py-2 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"

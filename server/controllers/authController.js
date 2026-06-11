@@ -14,8 +14,14 @@ exports.signup = async (req, res) => {
             return res.status(400).json({ message: "All fields are required" });
         }
 
-        if (password.length < 6) {
-            return res.status(400).json({ message: "Password must be at least 6 characters" });
+        if (password.length < 8) {
+            return res.status(400).json({ message: "Password must be at least 8 characters" });
+        }
+
+        if (!/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[!@#$%^&*])/.test(password)) {
+            return res.status(400).json({
+                message: "Password must contain uppercase, lowercase, number and symbol"
+            });
         }
 
         if (role === "admin") {
@@ -38,7 +44,7 @@ exports.signup = async (req, res) => {
 
         const newUser = await User.create({
             name,
-            email: email.toLowerCase(), 
+            email: email.toLowerCase(),
             password: hashPassword,
             role: role || "student",
             companyEmail,
@@ -171,6 +177,18 @@ exports.forgotPassword = async (req, res) => {
 exports.resetPassword = async (req, res) => {
     try {
         const { email, otp, password } = req.body;
+
+        if (password.length < 8) {
+            return res.status(400).json({
+                message: "Password must be at least 8 characters"
+            });
+        }
+
+        if (!/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[!@#$%^&*])/.test(password)) {
+            return res.status(400).json({
+                message: "Password must contain uppercase, lowercase, number and symbol"
+            });
+        }
 
         const user = await User.findOne({
             email: email.toLowerCase(),
