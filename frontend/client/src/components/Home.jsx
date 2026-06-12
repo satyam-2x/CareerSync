@@ -24,7 +24,8 @@ function Home() {
 
           {/* Action Buttons */}
           <div className="mt-10 flex flex-col sm:flex-row justify-center gap-4">
-            <Link to="/jobs">
+
+            <Link to={user?.role === "recruiter" ? "/my-jobs" : "/jobs"}>
               <button className="w-full sm:w-auto bg-blue-600 text-white px-8 py-3 rounded-full font-semibold shadow-lg hover:bg-blue-700 transition">
                 Browse Jobs
               </button>
@@ -37,6 +38,7 @@ function Home() {
                 </button>
               </Link>
             )}
+
           </div>
 
           {/* Features */}
@@ -67,6 +69,7 @@ function Home() {
 
         </div>
       </div>
+
     </div>
   );
 }
