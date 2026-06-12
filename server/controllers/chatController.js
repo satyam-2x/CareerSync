@@ -5,7 +5,7 @@ const ai = new GoogleGenAI({
 });
 
 // AI chat controller
-const chatController = async (req, res) => {
+exports.chatController = async (req, res) => {
     try {
         const { message } = req.body;
         const role = req.user?.role;
@@ -146,9 +146,6 @@ Rules:
         });
 
     } catch (error) {
-        console.log(error);
         res.status(500).json({ message: "Something went wrong. Please try again." });
     }
 };
-
-module.exports = chatController;

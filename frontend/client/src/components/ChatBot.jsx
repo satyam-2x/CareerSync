@@ -61,7 +61,6 @@ function chat() {
         token
       );
 
-      console.log(response.data);
       const botMessage = {
         text: response.data.reply,
         sender: "bot",
