@@ -12,6 +12,7 @@ function ResetPassword() {
   const [type, setType] = useState("");
   const [passwordStrength, setPasswordStrength] = useState("");
   const [loading, setLoading] = useState(false);
+  const [showPassword, setShowPassword] = useState(false);
   const [form, setForm] = useState({
     email: emailFromState || "",
     otp: "",
@@ -135,16 +136,27 @@ function ResetPassword() {
           className="w-full border p-2 rounded mb-3 focus:outline-none focus:ring-2 focus:ring-blue-400"
         />
 
-        <input
-          type="password"
-          name="password"
-          placeholder="New Password"
-          onChange={handleChange}
-          className="w-full border p-2 rounded mb-4 focus:outline-none focus:ring-2 focus:ring-blue-400"
-        />
+        <div className="relative mb-3">
+          <input
+            type={showPassword ? "text" : "password"}
+            name="password"
+            placeholder="Password"
+            value={form.password}
+            onChange={handleChange}
+            className="w-full border px-4 py-2 rounded-lg pr-12 focus:outline-none focus:ring-2 focus:ring-blue-500"
+          />
+
+          <button
+            type="button"
+            onClick={() => setShowPassword(!showPassword)}
+            className="absolute right-3 top-1/2 -translate-y-1/2"
+          >
+            {showPassword ? "🙈" : "👁️"}
+          </button>
+        </div>
 
         <p
-          className={`text-sm mt-1 ${passwordStrength === "Weak"
+          className={`text-sm mt-1 mb-3 ${passwordStrength === "Weak"
             ? "text-red-500"
             : passwordStrength === "Medium"
               ? "text-yellow-500"

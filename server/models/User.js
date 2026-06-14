@@ -73,10 +73,6 @@ const userSchema = new mongoose.Schema({
     resetPasswordOTP: { type: String },
     resetPasswordExpires: { type: Date },
 
-    // --- EMAIL OTP VERIFICATION ---
-    otp: { type: String },
-    otpExpire: { type: Date },
-    isVerified: { type: Boolean, default: false }
 }, { timestamps: true });
 
 module.exports = mongoose.model("User", userSchema);

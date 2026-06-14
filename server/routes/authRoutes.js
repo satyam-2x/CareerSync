@@ -9,6 +9,7 @@ const {
   logout,
   forgotPassword,
   resetPassword,
+  sendOtp,
   verifyOtp
 } = require("../controllers/authController");
 
@@ -16,6 +17,7 @@ const {
 // --- AUTH ROUTES ---
 
 router.post("/signup", signup);
+router.post("/send-otp", sendOtp);
 router.post("/verify-otp", verifyOtp);
 router.post("/login", login);
 router.post("/logout", isAuthenticated, logout); 

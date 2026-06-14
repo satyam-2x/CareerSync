@@ -13,6 +13,8 @@ function ChangePassword() {
   const [loading, setLoading] = useState(false);
   const [message, setMessage] = useState("");
   const [passwordStrength, setPasswordStrength] = useState("");
+  const [showOldPassword, setShowOldPassword] = useState(false);
+  const [showNewPassword, setShowNewPassword] = useState(false);
   const [type, setType] = useState("");
 
   // Auto-clear message
@@ -110,30 +112,50 @@ function ChangePassword() {
           </div>
         )}
 
-        <input
-          type="password"
-          name="oldPassword"
-          placeholder="Old Password"
-          value={form.oldPassword}
-          onChange={handleChange}
-          className="w-full border px-4 py-2 rounded-lg mt-4"
-        />
+        <div className="relative mt-4">
+          <input
+            type={showOldPassword ? "text" : "password"}
+            name="oldPassword"
+            placeholder="Old Password"
+            value={form.oldPassword}
+            onChange={handleChange}
+            className="w-full border px-4 py-2 rounded-lg pr-12"
+          />
 
-        <input
-          type="password"
-          name="newPassword"
-          placeholder="New Password"
-          value={form.newPassword}
-          onChange={handleChange}
-          className="w-full border px-4 py-2 rounded-lg mt-3"
-        />
+          <button
+            type="button"
+            onClick={() => setShowOldPassword(!showOldPassword)}
+            className="absolute right-3 top-1/2 -translate-y-1/2"
+          >
+            {showOldPassword ? "🙈" : "👁️"}
+          </button>
+        </div>
+
+        <div className="relative mt-3">
+          <input
+            type={showNewPassword ? "text" : "password"}
+            name="newPassword"
+            placeholder="New Password"
+            value={form.newPassword}
+            onChange={handleChange}
+            className="w-full border px-4 py-2 rounded-lg pr-12"
+          />
+
+          <button
+            type="button"
+            onClick={() => setShowNewPassword(!showNewPassword)}
+            className="absolute right-3 top-1/2 -translate-y-1/2"
+          >
+            {showNewPassword ? "🙈" : "👁️"}
+          </button>
+        </div>
 
         <p
           className={`text-sm mt-1 ${passwordStrength === "Weak"
-              ? "text-red-500"
-              : passwordStrength === "Medium"
-                ? "text-yellow-500"
-                : "text-green-600"
+            ? "text-red-500"
+            : passwordStrength === "Medium"
+              ? "text-yellow-500"
+              : "text-green-600"
             }`}
         >
           {passwordStrength && `Password Strength: ${passwordStrength}`}

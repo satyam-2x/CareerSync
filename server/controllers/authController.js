@@ -1,5 +1,6 @@
 const bcrypt = require("bcryptjs");
 const User = require("../models/User");
+const Otp = require("../models/Otp");
 const jwt = require("jsonwebtoken");
 const sendMail = require("../utils/mailer");
 const verifyEmailTemplate = require("../utils/emails/verifyEmail");
@@ -38,9 +39,17 @@ exports.signup = async (req, res) => {
             return res.status(400).json({ message: "Email already registered" });
         }
 
+        const otpRecord = await Otp.findOne({
+            email: email.toLowerCase(),
+            isVerified: true
+        });
+
+        if (!otpRecord) {
+            return res.status(400).json({ message: "Please verify your email first" });
+        }
+
         const hashPassword = await bcrypt.hash(password, 10);
 
-        const otp = Math.floor(100000 + Math.random() * 900000).toString();
 
         const newUser = await User.create({
             name,
@@ -48,6 +57,63 @@ exports.signup = async (req, res) => {
             password: hashPassword,
             role: role || "student",
             companyEmail,
+            verified: true, 
+        });
+
+        await Otp.findOneAndDelete({
+            email: email.toLowerCase()
+        });
+
+        res.status(201).json({
+            success: true,
+            message: "User registered successfully",
+        });
+
+    } catch (error) {
+        console.log(error);
+        res.status(500).json({ message: "Server error during signup" });
+    }
+};
+
+
+exports.sendOtp = async (req, res) => {
+    try {
+        const { email } = req.body;
+
+        if (!email) {
+            return res.status(400).json({ message: "Email is required" });
+        }
+
+        const userExists = await User.findOne({
+            email: email.toLowerCase()
+        });
+
+
+        if (userExists) {
+            return res.status(400).json({ message: "Email is already registered" });
+        }
+
+        const existingOtp = await Otp.findOne({
+            email: email.toLowerCase()
+        });
+
+        if (
+            existingOtp &&
+            Date.now() - existingOtp.createdAt.getTime() < 60 * 1000
+        ) {
+            return res.status(400).json({
+                message: "Please wait 60 seconds before requesting another OTP"
+            });
+        }
+
+        const otp = Math.floor(100000 + Math.random() * 900000).toString();
+
+        await Otp.findOneAndDelete({
+            email: email.toLowerCase()
+        });
+
+        await Otp.create({
+            email: email.toLowerCase(),
             otp,
             otpExpire: Date.now() + 5 * 60 * 1000
         });
@@ -60,17 +126,17 @@ exports.signup = async (req, res) => {
             template.html
         );
 
-        res.status(201).json({
+        res.status(200).json({
             success: true,
-            message: "User registered! OTP sent to email",
+            message: "OTP sent successfully"
         });
 
     } catch (error) {
-        console.log(error);
-        res.status(500).json({ message: "Server error during signup" });
+        res.status(500).json({
+            message: "Error sending OTP"
+        });
     }
 };
-
 
 // --- VERIFY OTP ---
 exports.verifyOtp = async (req, res) => {
@@ -78,17 +144,14 @@ exports.verifyOtp = async (req, res) => {
         const { email, otp } = req.body;
 
 
-        const user = await User.findOne({ email: email.toLowerCase() });
+        const otpRecord = await Otp.findOne({ email: email.toLowerCase() });
 
-        if (!user || user.otp !== otp || user.otpExpire < Date.now()) {
+        if (!otpRecord || otpRecord.otp !== otp || otpRecord.otpExpire < Date.now()) {
             return res.status(400).json({ message: "Invalid or expired OTP" });
         }
 
-        user.isVerified = true;
-        user.otp = undefined;
-        user.otpExpire = undefined;
-
-        await user.save();
+        otpRecord.isVerified = true;
+        await otpRecord.save();
 
         res.json({ message: "Account verified successfully" });
 
@@ -110,7 +173,7 @@ exports.login = async (req, res) => {
             return res.status(401).json({ message: "Invalid email or password" });
         }
 
-        if (!user.isVerified) {
+        if (!user.verified) {
             return res.status(403).json({ message: "Please verify your email first" });
         }
 

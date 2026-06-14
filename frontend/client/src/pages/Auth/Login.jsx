@@ -9,6 +9,7 @@ function Login() {
   const [message, setMessage] = useState("");
   const [type, setType] = useState("");
   const [loading, setLoading] = useState(false);
+  const [showPassword, setShowPassword] = useState(false);
   const [form, setForm] = useState({
     email: "",
     password: "",
@@ -103,13 +104,24 @@ function Login() {
             className="w-full border px-4 py-2 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
           />
 
-          <input
-            name="password"
-            type="password"
-            placeholder="Password"
-            onChange={handleChange}
-            className="w-full border px-4 py-2 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-          />
+          <div className="relative mt-3">
+            <input
+              type={showPassword ? "text" : "password"}
+              name="password"
+              placeholder="Password"
+              value={form.password}
+              onChange={handleChange}
+              className="w-full border px-4 py-2 rounded-lg pr-12 focus:outline-none focus:ring-2 focus:ring-blue-500"
+            />
+
+            <button
+              type="button"
+              onClick={() => setShowPassword(!showPassword)}
+              className="absolute right-3 top-1/2 -translate-y-1/2"
+            >
+              {showPassword ? "🙈" : "👁️"}
+            </button>
+          </div>
 
           <button
             onClick={handleSubmit}

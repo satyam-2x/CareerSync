@@ -12,7 +12,6 @@ import Login from "../pages/Auth/Login";
 import Signup from "../pages/Auth/Signup";
 import ForgotPassword from "../pages/Auth/ForgotPassword";
 import ResetPassword from "../pages/Auth/ResetPassword";
-import VerifyOtp from "../pages/Auth/VerifyOtp";
 
 // ---------- Jobs (Student) ----------
 import Jobs from "../pages/Jobs/Jobs";
@@ -96,14 +95,6 @@ function AppRoutes() {
               }
             />
 
-            <Route
-              path="/verify-otp"
-              element={
-                <PublicRoute>
-                  <VerifyOtp />
-                </PublicRoute>
-              }
-            />
 
             {/* ---------- Student Routes ---------- */}
             <Route
