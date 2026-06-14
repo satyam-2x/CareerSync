@@ -78,16 +78,36 @@ function UpdateProfile() {
 
     if (name === "semester" && (value < 1 || value > 8)) return;
 
-    if (name === "cgpa" && (value < 0 || value > 10)) return;
+    if (
+      name === "branch" &&
+      !/^[A-Za-z\s.&-]*$/.test(value)
+    ) {
+      return;
+    }
 
-    if (name === "course" && !/^[A-Za-z\s]*$/.test(value)) return;
+    if (
+      name === "course" &&
+      !/^[A-Za-z\s.&-]*$/.test(value)
+    ) {
+      return;
+    }
 
     if (name === "branch" && !/^[A-Za-z\s]*$/.test(value)) return;
 
-    if (name === "prn" && !/^\d*$/.test(value) || value.length > 12 ) return;
+    if (
+      name === "prn" &&
+      (!/^\d*$/.test(value) || value.length > 12)
+    ) {
+      return;
+    }
 
-    if (name === "contactNumber" && !/^\d*$/.test(value) || value.length > 10 ) return;
-    
+    if (
+      name === "contactNumber" &&
+      (!/^\d*$/.test(value) || value.length > 10)
+    ) {
+      return;
+    }
+
     setForm((prev) => ({
       ...prev,
       [name]: value,
@@ -210,8 +230,8 @@ function UpdateProfile() {
 
         {message && (
           <div className={`mt-4 p-3 rounded-lg text-sm text-center ${type === "success"
-              ? "bg-green-100 text-green-700"
-              : "bg-red-100 text-red-700"
+            ? "bg-green-100 text-green-700"
+            : "bg-red-100 text-red-700"
             }`}>
             {message}
           </div>
@@ -235,7 +255,7 @@ function UpdateProfile() {
               min="1"
               max="8"
               step="1"
-              value={form.semester} 
+              value={form.semester}
               onChange={handleChange} />
 
             <CustomInput
