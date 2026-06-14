@@ -57,7 +57,8 @@ exports.signup = async (req, res) => {
             password: hashPassword,
             role: role || "student",
             companyEmail,
-            verified: true, 
+            isVerified: true,
+            isApproved: false
         });
 
         await Otp.findOneAndDelete({
@@ -76,6 +77,7 @@ exports.signup = async (req, res) => {
 };
 
 
+// --- SEND OTP ---
 exports.sendOtp = async (req, res) => {
     try {
         const { email } = req.body;
@@ -138,6 +140,7 @@ exports.sendOtp = async (req, res) => {
     }
 };
 
+
 // --- VERIFY OTP ---
 exports.verifyOtp = async (req, res) => {
     try {
@@ -173,7 +176,7 @@ exports.login = async (req, res) => {
             return res.status(401).json({ message: "Invalid email or password" });
         }
 
-        if (!user.verified) {
+        if (!user.isVerified) {
             return res.status(403).json({ message: "Please verify your email first" });
         }
 

@@ -42,7 +42,7 @@ exports.verifyStudent = async (req, res) => {
             return res.status(400).json({ message: "Student must have PRN" });
         }
 
-        user.verified = true; 
+        user.isApproved = true; 
         await user.save();
 
         res.status(200).json({ success: true, message: "Student verified" });
@@ -93,7 +93,7 @@ exports.verifyRecruiter = async (req, res) => {
             return res.status(400).json({ message: "Company email required" });
         }
 
-        user.verified = true; 
+        user.isApproved = true; 
         await user.save();
 
         res.status(200).json({ success: true, message: "Recruiter verified" });

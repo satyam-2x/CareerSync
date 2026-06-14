@@ -70,6 +70,11 @@ exports.applyJob = async (req, res) => {
         }
 
         const user = await User.findById(studentId);
+
+        if(!user.isApproved) {
+            return res.status(403).json({ message: "Your account is pending admin approval" });
+        }
+        
         if (!user.resume) {
             return res.status(400).json({ message: "Upload resume first" });
         }

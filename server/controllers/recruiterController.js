@@ -10,7 +10,7 @@ exports.postJob = async (req, res) => {
         const recruiter = await User.findById(req.user.id);
 
         // Check recruiter verification
-        if (!recruiter.verified) {
+        if (!recruiter.isApproved) {
             return res.status(403).json({
                 message: "Only verified recruiters can post jobs"
             });

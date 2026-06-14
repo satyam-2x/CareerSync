@@ -35,6 +35,7 @@ function Signup() {
     }
   }, [message]);
 
+  // OTP countdown timer
   useEffect(() => {
     if (timer <= 0) return;
 
@@ -44,6 +45,7 @@ function Signup() {
 
     return () => clearInterval(interval);
   }, [timer]);
+
 
   // Handle input change
   const handleChange = (e) => {
@@ -68,6 +70,7 @@ function Signup() {
     setForm({ ...form, [name]: value });
   };
 
+  // Send OTP
   const handleSendOtp = async () => {
     if (!form.email) {
       setMessage("Please enter your email");
@@ -96,6 +99,7 @@ function Signup() {
     }
   };
 
+  // Verify OTP
   const handleVerifyOtp = async () => {
     if (!otp) {
       setMessage("Please enter otp");
