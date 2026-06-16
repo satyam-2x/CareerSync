@@ -146,6 +146,11 @@ exports.verifyOtp = async (req, res) => {
     try {
         const { email, otp } = req.body;
 
+        if (!email || !otp) {
+            return res.status(400).json({
+                message: "Email and OTP are required"
+            });
+        }
 
         const otpRecord = await Otp.findOne({ email: email.toLowerCase() });
 
@@ -169,6 +174,11 @@ exports.login = async (req, res) => {
     try {
         const { email, password } = req.body;
 
+        if (!email || !password) {
+            return res.status(400).json({
+                message: "Email and password are required"
+            });
+        }
 
         const user = await User.findOne({ email: email.toLowerCase() });
 
@@ -211,6 +221,11 @@ exports.forgotPassword = async (req, res) => {
     try {
         const { email } = req.body;
 
+        if (!email) {
+            return res.status(400).json({
+                message: "Email is required"
+            });
+        }
 
         const user = await User.findOne({ email: email.toLowerCase() });
 
@@ -243,6 +258,10 @@ exports.forgotPassword = async (req, res) => {
 exports.resetPassword = async (req, res) => {
     try {
         const { email, otp, password } = req.body;
+
+        if (!email || !otp || !password) {
+            return res.status(400).json({ message: "All fields required" });
+        }
 
         if (password.length < 8) {
             return res.status(400).json({
