@@ -1,9 +1,11 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
 import { useNavigate } from "react-router-dom";
 import {
   getProfile,
   updateProfile,
   uploadResume as uploadResumeAPI,
+  uploadImage,
+  removeImage,
 } from "../../services/userService";
 
 const CustomInput = ({
@@ -34,6 +36,7 @@ const CustomInput = ({
 
 function UpdateProfile() {
   const navigate = useNavigate();
+  const fileInputRef = useRef(null);
   const token = localStorage.getItem("token");
 
   // State management
@@ -44,6 +47,8 @@ function UpdateProfile() {
   const [uploading, setUploading] = useState(false);
   const [message, setMessage] = useState("");
   const [type, setType] = useState("");
+  const [imageUploading, setImageUploading] = useState(false);
+  const [showImageMenu, setShowImageMenu] = useState(false);
 
   // Auto-clear message
   useEffect(() => {
@@ -116,6 +121,73 @@ function UpdateProfile() {
 
   const handleFile = (e) => {
     setFile(e.target.files[0]);
+  };
+
+
+  const handleImage = (e) => {
+    const file = e.target.files[0];
+
+    if (!file) return;
+
+    handleUploadImage(file);
+  };
+
+
+  // Upload image
+  const handleUploadImage = async (file) => {
+    if (!file) {
+      setMessage("Please select an image");
+      setType("error");
+      return;
+    }
+
+    try {
+      setImageUploading(true);
+
+      const formData = new FormData();
+      formData.append("image", file);
+
+      const res = await uploadImage(formData, token);
+
+      setForm((prev) => ({
+        ...prev,
+        profileImage: res.data.image,
+      }));
+
+      setMessage(res.data.message);
+      setType("success");
+
+    } catch (error) {
+      setMessage("Image upload falied");
+      setType("error");
+
+    } finally {
+      setImageUploading(false);
+    }
+  };
+
+  // Remove image
+  const handleRemoveImage = async () => {
+    try {
+      setImageUploading(true);
+
+      const res = await removeImage(token);
+
+      setForm((prev) => ({
+        ...prev,
+        profileImage: null,
+      }));
+
+      setMessage(res.data.message || "Image removed");
+      setType("success");
+
+    } catch (error) {
+      setMessage(error.response?.data?.message || "Failed to remove image");
+      setType("error");
+
+    } finally {
+      setImageUploading(false);
+    }
   };
 
   // Upload resume
@@ -216,6 +288,7 @@ function UpdateProfile() {
     }
   };
 
+
   if (!user) {
     return <p className="text-center mt-10 text-gray-500">Loading...</p>;
   }
@@ -236,6 +309,74 @@ function UpdateProfile() {
             {message}
           </div>
         )}
+
+        <div className="flex flex-col items-center mt-4 mb-4">
+
+          {form.profileImage ? (
+            <img
+              src={form.profileImage}
+              onClick={() => setShowImageMenu(true)}
+              alt="Profile"
+              className="w-24 h-24 rounded-full object-cover border"
+            />
+          ) : (
+            <div
+              onClick={() => setShowImageMenu(true)}
+              className="w-24 h-24 rounded-full bg-gray-200 flex items-center justify-center cursor-pointer"
+            >
+              No Image
+            </div>
+          )}
+
+          <input
+            ref={fileInputRef}
+            type="file"
+            accept="image/*"
+            hidden
+            onChange={handleImage}
+          />
+
+          {showImageMenu && (
+            <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
+
+              <div className="bg-white rounded-2xl w-80 overflow-hidden shadow-xl">
+
+                <h2 className="text-xl font-semibold text-center py-5 border-b">
+                  Change Profile Photo
+                </h2>
+
+                <button
+                  className="w-full py-4 text-blue-600 font-semibold border-b hover:bg-gray-100"
+                  onClick={() => {
+                    fileInputRef.current.click();
+                    setShowImageMenu(false);
+                  }}
+                >
+                  Upload Photo
+                </button>
+
+                <button
+                  className="w-full py-4 text-red-600 font-semibold border-b hover:bg-gray-100"
+                  onClick={async () => {
+                    await handleRemoveImage();
+                    setShowImageMenu(false);
+                  }}
+                >
+                  Remove Current Photo
+                </button>
+
+                <button
+                  className="w-full py-4 hover:bg-gray-100"
+                  onClick={() => setShowImageMenu(false)}
+                >
+                  Cancel
+                </button>
+
+              </div>
+
+            </div>
+          )}
+        </div>
 
         <div className="mt-4">
           <CustomInput name="name" value={form.name} readOnly />

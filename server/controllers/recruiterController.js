@@ -107,6 +107,7 @@ exports.updateJob = async (req, res) => {
             job: updateJob
         });
     } catch (error) {
+        console.error(error);
         res.status(500).json({ message: "Update error" });
     }
 };

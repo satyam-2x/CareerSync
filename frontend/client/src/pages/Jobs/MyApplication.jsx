@@ -26,7 +26,7 @@ function MyApplications() {
         const token = localStorage.getItem("token");
         const res = await getMyApplications(localStorage.getItem("token"));
         setApps(res.data);
-      } catch (err) {
+      } catch (error) {
         setMessage("Error fetching applications");
         setType("error");
       } finally {

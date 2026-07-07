@@ -126,14 +126,107 @@ exports.updateProfile = async (req, res) => {
         });
 
     } catch (error) {
-        console.log(error).res.status(500).json({
+        console.error(error)
+        return res.status(500).json({
             success: false,
             error: error.message
-        })
+        });
         res.status(500).json({ message: "Error updating profile" });
     }
 };
 
+// --- ADD PROFILE IMAGE ---
+exports.uploadProfileImage = async (req, res) => {
+    try {
+        if (!req.file) {
+            return res.status(400).json({ message: "Image Required" });
+        }
+
+        if (!req.file.mimetype.startsWith("image/")) {
+            return res.status(400).json({ message: "Only image files are allowed." })
+        }
+
+        const user = await User.findById(req.user.id);
+
+        if (!user) {
+            return res.status(404).json({ message: "User not found" });
+        }
+
+        const uploadStream = cloudinary.uploader.upload_stream(
+            {
+                access_mode: "public",
+                folder: "profile_images"
+            },
+            async (error, result) => {
+                if (error) {
+                    console.error("Cloudinary Error:", error);
+                    return res.status(500).json({ message: "Upload failed" });
+                }
+
+                try {
+                    if (user.profileImagePublicId) {
+                        await cloudinary.uploader.destroy(user.profileImagePublicId);
+                    }
+
+                    user.profileImage = result.secure_url;
+                    user.profileImagePublicId = result.public_id;
+
+                    await user.save();
+
+                    return res.status(200).json({
+                        success: true,
+                        message: "Profile image uploaded successfully",
+                        image: result.secure_url
+                    });
+
+                } catch (dbError) {
+                    console.error("DB Error:", dbError);
+                    return res.status(500).json({ message: "Uploaded but DB update failed" });
+                };
+            }
+        );
+
+        uploadStream.end(req.file.buffer);
+
+    } catch (error) {
+        console.error("Server Error:", error);
+        return res.status(500).json({ message: "Server error" });
+    }
+};
+
+// --- REMOVE PROFILE IMAGE ---
+exports.deleteProfileImage = async (req, res) => {
+    try {
+        const userId = req.user.id;
+
+        const user = await User.findById(userId);
+
+        if (!user) {
+            return res.status(404).json({ message: "User not found" });
+        }
+
+        if (!user.profileImagePublicId) {
+            return res.status(400).json({ message: "No profile image to delete" });
+        }
+
+        await cloudinary.uploader.destroy(user.profileImagePublicId);
+
+
+        user.profileImage = null;
+        user.profileImagePublicId = null;
+
+        await user.save();
+
+        return res.status(200).json({
+            success: true,
+            message: "Profile image deleted successfully"
+        });
+
+    } catch (error) {
+        console.error(error);
+        return res.status(500).json({ message: "Server error while deleting image" });
+    }
+};
 
 // --- CHANGE PASSWORD ---
 exports.changePassword = async (req, res) => {
@@ -183,6 +276,7 @@ exports.changePassword = async (req, res) => {
         });
 
     } catch (error) {
+        console.error(error);
         res.status(500).json({ message: "Error changing password" });
     }
 };
@@ -215,6 +309,10 @@ exports.deleteAccount = async (req, res) => {
             });
         }
 
+        if (user.profileImagePublicId) {
+            await cloudinary.uploader.destroy(user.profileImagePublicId);
+        }
+
         await User.findByIdAndDelete(req.user.id);
 
         res.status(200).json({
@@ -226,3 +324,4 @@ exports.deleteAccount = async (req, res) => {
         res.status(500).json({ message: "Error deleting account" });
     }
 };
+

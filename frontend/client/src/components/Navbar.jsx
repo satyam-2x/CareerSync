@@ -1,13 +1,32 @@
 import { Link, useNavigate } from "react-router-dom";
 import { useState, useEffect, useRef } from "react";
+import { getProfile } from "../services/userService";
 import logo from "../assets/logo.png";
 
 const Navbar = () => {
-  const [activeMenu, setActiveMenu] = useState(null);
   const navigate = useNavigate();
   const navRef = useRef();
 
-  const user = JSON.parse(localStorage.getItem("user"));
+  const [activeMenu, setActiveMenu] = useState(null);
+  const [user, setUser] = useState(null);
+
+  useEffect(() => {
+    const fetchUser = async () => {
+      try {
+        const token = localStorage.getItem("token");
+
+        if (!token) return;
+
+        const res = await getProfile(token);
+        setUser(res.data.user);
+
+      } catch (error) {
+        console.error(error);
+      }
+    };
+
+    fetchUser();
+  }, []);
 
   useEffect(() => {
     const handleClickOutside = (event) => {
@@ -104,15 +123,30 @@ const Navbar = () => {
 
         {user && (
           <div className="relative">
-            <button onClick={() => toggleMenu("profile")}>
-              Profile ▼
+            <button
+              onClick={() => toggleMenu("profile")}
+              className="flex items-center gap-2"
+            >
+              {user.profileImage ? (
+                <img
+                  src={user.profileImage}
+                  className="w-9 h-9 rounded-full object-cover"
+                  alt="Profile"
+                />
+              ) : (
+                <div className="w-9 h-9 rounded-full bg-gray-300 flex items-center justify-center">
+                  👤
+                </div>
+              )}
+
+              <span>▼</span>
             </button>
 
             {activeMenu === "profile" && (
               <div className="absolute right-0 mt-2 w-48 bg-white rounded-lg shadow-md text-gray-800">
 
                 <div className="px-4 py-2 border-b text-sm font-semibold">
-                  {user.name}
+                  {user?.name}
                 </div>
 
                 <Link to="/profile" onClick={closeMenu} className="block px-4 py-2 hover:bg-gray-100">Profile</Link>

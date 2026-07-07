@@ -18,6 +18,21 @@ export const updateProfile = (data, token) =>
         },
     });
 
+export const uploadImage = (formData, token) =>
+    API.post("/users/profile-image", formData, {
+        headers: {
+            "Content-Type": "multipart/form-data",
+            Authorization: `Bearer ${token}`,
+        },
+    });
+
+export const removeImage = (token) =>
+    API.delete("/users/profile-image", {
+        headers: {
+            Authorization: `Bearer ${token}`,
+        }
+    });
+
 // --- Resume ---
 
 // Upload user resume

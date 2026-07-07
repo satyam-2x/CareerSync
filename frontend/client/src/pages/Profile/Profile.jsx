@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { getProfile } from "../../services/userService"; // ✅ FIX
+import { getProfile } from "../../services/userService";
 
 function Profile() {
   const [user, setUser] = useState(null);
@@ -50,6 +50,20 @@ function Profile() {
         <h2 className="text-2xl font-semibold text-center text-gray-800">
           My Profile
         </h2>
+
+        <div className="flex justify-center mt-6">
+          {user.profileImage ? (
+            <img
+              src={user.profileImage}
+              alt="Profile"
+              className="w-28 h-28 rounded-full object-cover border-2 border-gray-300"
+            />
+          ) : (
+            <div className="w-28 h-28 rounded-full bg-gray-200 flex items-center justify-center text-gray-500">
+              No Image
+            </div>
+          )}
+        </div>
 
         {message && (
           <div className={`mt-4 p-3 rounded-lg text-sm text-center ${type === "success" ? "bg-green-100 text-green-700" : "bg-red-100 text-red-700"

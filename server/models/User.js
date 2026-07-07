@@ -52,6 +52,9 @@ const userSchema = new mongoose.Schema({
     resume: { type: String },
     resumePublicId: { type: String },
 
+    profileImage: { type: String },
+    profileImagePublicId: { type: String },
+
     // --- RECRUITER FIELDS ---
     companyName: { type: String, trim: true },
     companyEmail: {
