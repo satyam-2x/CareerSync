@@ -26,8 +26,9 @@ function Applicants() {
   useEffect(() => {
     const fetchApplicants = async () => {
       try {
-        const token = localStorage.getItem("token");
-        const res = await getApplicants(id, token);
+        setLoading(true);
+        
+        const res = await getApplicants(id);
         setApps(res.data.applicants);
       } catch {
         setMessage("Error loading applicants");
@@ -43,10 +44,10 @@ function Applicants() {
   // Update status
   const updateStatus = async (appId, status) => {
     try {
-      const token = localStorage.getItem("token");
+      
       await updateApplicationStatus(
         appId,
-        { status }, token);
+        { status });
 
       setApps(apps.map(app =>
         app._id === appId ? { ...app, status } : app

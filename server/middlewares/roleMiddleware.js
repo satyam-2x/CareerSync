@@ -21,44 +21,6 @@ exports.authorizeRoles = (...roles) => {
 };
 
 
-// --- STUDENT ONLY ---
-exports.isStudent = (req, res, next) => {
-
-    if (!req.user || req.user.role !== "student") {
-        return res.status(403).json({
-            message: "Only students allowed"
-        });
-    }
-
-    next();
-};
-
-
-// --- RECRUITER ONLY ---
-exports.isRecruiter = (req, res, next) => {
-
-    if (!req.user || req.user.role !== "recruiter") {
-        return res.status(403).json({
-            message: "Only recruiters allowed"
-        });
-    }
-
-    next();
-};
-
-
-// --- ADMIN ONLY ---
-exports.isAdmin = (req, res, next) => {
-
-    if (!req.user || req.user.role !== "admin") {
-        return res.status(403).json({
-            message: "Only admin allowed"
-        });
-    }
-
-    next();
-};
-
 // Optional authentication middleware
 exports.optionalAuth = (req, res, next) => {
     try {

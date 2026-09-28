@@ -9,19 +9,11 @@ export const getJobs = (search) => API.get(`/jobs?search=${search}`);
 export const getJobById = (id) => API.get(`/jobs/${id}`);
 
 // Apply to a job
-export const applyJob = (id, token) =>
-    API.post(`/jobs/${id}/apply`, {}, {
-        headers: {
-            Authorization: `Bearer ${token}`,
-        },
-    });
+export const applyJob = (id) =>
+    API.post(`/jobs/${id}/apply`, {});
 
 // --- Applications ---
 
 // Fetch logged-in user's applications
-export const getMyApplications = (token) =>
-    API.get("/jobs/me", {
-        headers: {
-            Authorization: `Bearer ${token}`,
-        },
-    });
+export const getMyApplications = () =>
+    API.get("/jobs/me");

@@ -48,6 +48,8 @@ exports.postJob = async (req, res) => {
 
 // --- GET MY JOBS ---
 exports.getMyJobs = async (req, res) => {
+    console.time("optimization");
+    
     try {
         const { search, status, jobType } = req.query;
 
@@ -70,6 +72,7 @@ exports.getMyJobs = async (req, res) => {
 
         const jobs = await Job.find(query);
 
+        console.timeEnd("optimization");
         res.status(200).json({
             jobs
         });
@@ -145,12 +148,20 @@ exports.deleteJob = async (req, res) => {
 // --- GET APPLICANTS ---
 exports.getApplicants = async (req, res) => {
     try {
+        const page = parseInt(req.query.page) || 1;
+        const limit =  10;
+        const skip = (page - 1) * limit;
+
         const applicants = await Application.find({
             jobId: req.params.id,
             status: { $ne: "deleted" }
-        }).populate("studentId", "name email branch cgpa resume");
-
+        })
+        .skip(skip)
+        .limit(limit)
+        .populate("studentId", "name email branch cgpa resume");
+      
         const filtered = applicants.filter(app => app.studentId != null);
+ 
 
         res.json({
             success: true,

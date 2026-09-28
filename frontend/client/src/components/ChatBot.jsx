@@ -10,8 +10,6 @@ function chat() {
   const [message, setMessage] = useState("")
   const [type, setType] = useState("");
   const [open, setOpen] = useState(false);
-
-  const token = localStorage.getItem("token");
   const messagesEndRef = useRef(null);
 
   // Auto-clear message after 3 seconds
@@ -57,8 +55,7 @@ function chat() {
       setLoading(true);
 
       const response = await sendMessage(
-        { message: input },
-        token
+        { message: input }
       );
 
       const botMessage = {

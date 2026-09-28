@@ -41,10 +41,9 @@ function EditJob() {
   useEffect(() => {
     const fetchJob = async () => {
       try {
+        setLoading(true);
 
-        const token = localStorage.getItem("token");
-
-        const res = await getRecruiterJobById(id, token);
+        const res = await getRecruiterJobById(id);
 
         const job = res.data;
         setForm({
@@ -108,8 +107,6 @@ function EditJob() {
     try {
       setUpdating(true);
 
-      const token = localStorage.getItem("token");
-
       await updateJob(id, {
         ...form,
         requirements: form.requirements ? form.requirements.split(",").map(r => r.trim()) : [],
@@ -117,7 +114,7 @@ function EditJob() {
         eligibleBranches: form.eligibleBranches ? form.eligibleBranches.split(",").map(br => br.trim()) : [],
         minCgpa: Number(form.minCgpa) || 0
       },
-        token
+      
       );
 
       setMessage("Job updated successfully");

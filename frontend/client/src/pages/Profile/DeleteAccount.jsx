@@ -29,9 +29,8 @@ function DeleteAccount() {
     try {
       setLoading(true);
 
-      const token = localStorage.getItem("token");
       const res = await deleteAccount(
-        { password: password.trim() }, token);
+        { password: password.trim() });
 
       setMessage(res.data.message || "Account deleted");
       setType("success");

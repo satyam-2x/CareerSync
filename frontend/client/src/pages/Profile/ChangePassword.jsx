@@ -79,9 +79,7 @@ function ChangePassword() {
 
     try {
       setLoading(true);
-
-      const token = localStorage.getItem("token");
-      const res = await changePassword(form, token);
+      const res = await changePassword(form);
 
       setMessage(res.data.message || "Password updated");
       setType("success");

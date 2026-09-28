@@ -4,7 +4,6 @@ import { getStudents } from "../../services/adminService";
 
 function Students() {
   const navigate = useNavigate();
-  const token = localStorage.getItem("token");
 
   // State management
   const [students, setStudents] = useState([]);
@@ -27,7 +26,9 @@ function Students() {
   useEffect(() => {
     const fetch = async () => {
       try {
-        const res = await getStudents(token);
+        setLoading(false);
+        
+        const res = await getStudents();
         setStudents(res.data);
       } catch {
         setMessage("Error fetching students");
@@ -38,7 +39,7 @@ function Students() {
     };
 
     fetch();
-  }, [token]);
+  }, []);
 
   if (loading) {
     return <p className="text-center mt-10 text-gray-500">Loading students...</p>;
@@ -80,11 +81,11 @@ function Students() {
                 <p className="text-sm mt-1">
                   Status:{" "}
                   <span className={
-                    s.verified
+                    s.isApproved
                       ? "text-green-600"
                       : "text-yellow-500"
                   }>
-                    {s.verified ? "Verified" : "Pending"}
+                    {s.isApproved ? "Verified" : "Pending"}
                   </span>
                 </p>
 

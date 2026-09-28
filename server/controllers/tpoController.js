@@ -5,9 +5,10 @@ const Job = require("../models/Job");
 // --- GET ALL STUDENTS ---
 exports.getAllStudents = async (req, res) => {
     try {
-        const students = await User.find({ role: "student" }).select("-password");
+        const students = await User.find({ role: "student" }).select("name isApproved");
         res.status(200).json(students);
     } catch (error) {
+         console.error("getAllStudents error:", error);
         res.status(500).json({ message: "Error fetching students" });
     }
 };
@@ -16,7 +17,7 @@ exports.getAllStudents = async (req, res) => {
 // --- GET STUDENT BY ID ---
 exports.getStudentById = async (req, res) => {
     try {
-        const student = await User.findById(req.params.id).select("-password");
+        const student = await User.findById(req.params.id).select("name email prn course branch semester cgpa resume isApproved role");
 
         if (!student || student.role !== "student") {
             return res.status(404).json({ message: "Student not found" });
@@ -56,7 +57,7 @@ exports.verifyStudent = async (req, res) => {
 // --- GET ALL RECRUITERS ---
 exports.getAllRecruiters = async (req, res) => {
     try {
-        const recruiters = await User.find({ role: "recruiter" }).select("-password");
+        const recruiters = await User.find({ role: "recruiter" }).select("companyName isApproved");
         res.status(200).json(recruiters);
     } catch (error) {
         res.status(500).json({ message: "Error fetching recruiters" });
@@ -67,7 +68,10 @@ exports.getAllRecruiters = async (req, res) => {
 // --- GET RECRUITER BY ID ---
 exports.getRecruiterById = async (req, res) => {
     try {
-        const recruiter = await User.findById(req.params.id).select("-password");
+      
+       const recruiter = await User.findById(req.params.id)
+       .select("companyName companyEmail contactNumber companyWebsite isApproved role");
+    
 
         if (!recruiter || recruiter.role !== "recruiter") {
             return res.status(404).json({ message: "Recruiter not found" });
@@ -107,8 +111,7 @@ exports.verifyRecruiter = async (req, res) => {
 // --- GET ALL JOBS ---
 exports.getAllJobs = async (req, res) => {
     try {
-        const jobs = await Job.find()
-            .populate("recruiterId", "name companyEmail");
+        const jobs = await Job.find().select("title approved");
 
         res.status(200).json(jobs);
     } catch (error) {
@@ -121,7 +124,8 @@ exports.getAllJobs = async (req, res) => {
 exports.getJobById = async (req, res) => {
     try {
         const job = await Job.findById(req.params.id)
-            .populate("recruiterId", "name companyEmail companyName");
+        .populate("recruiterId", "companyName name companyEmail");
+            
 
         if (!job) {
             return res.status(404).json({ message: "Job not found" });

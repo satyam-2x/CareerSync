@@ -4,7 +4,6 @@ import { getRecruiterById, verifyRecruiter } from "../../services/adminService";
 
 function RecruiterDetails() {
   const { id } = useParams();
-  const token = localStorage.getItem("token");
 
   // State management
   const [rec, setRec] = useState(null);
@@ -27,7 +26,9 @@ function RecruiterDetails() {
   useEffect(() => {
     const fetchRecruiter = async () => {
       try {
-        const res = await getRecruiterById(id, token);
+        setLoading(true);
+
+        const res = await getRecruiterById(id);
         setRec(res.data);
       } catch {
         setMessage("Error fetching recruiter");
@@ -38,14 +39,14 @@ function RecruiterDetails() {
     };
 
     fetchRecruiter();
-  }, [id, token]);
+  }, [id]);
 
   // Verify recruiter
   const verify = async () => {
     try {
-      await verifyRecruiter(id, token);
+      await verifyRecruiter(id);
 
-      setRec({ ...rec, verified: true });
+      setRec({ ...rec, isApproved: true });
       setMessage("Recruiter verified");
       setType("success");
 
@@ -103,13 +104,13 @@ function RecruiterDetails() {
         <p className="mt-3 text-sm">
           Status:{" "}
           <span className={
-            rec.verified ? "text-green-600" : "text-yellow-500"
+           rec.isApproved ? "text-green-600" : "text-yellow-500"
           }>
-            {rec.verified ? "Verified" : "Pending"}
+            {rec.isApproved ? "Verified" : "Pending"}
           </span>
         </p>
 
-        {!rec.verified && (
+        {!rec.isApproved && (
           <button
             onClick={verify}
             className="w-full mt-4 bg-blue-600 text-white py-2 rounded-lg hover:bg-blue-700 transition"

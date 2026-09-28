@@ -12,7 +12,6 @@ function Jobs() {
   const [message, setMessage] = useState("");
   const [type, setType] = useState("");
 
-  const token = localStorage.getItem("token");
   const query = new URLSearchParams(location.search);
   const recruiterId = query.get("recruiter");
 
@@ -31,7 +30,9 @@ function Jobs() {
   useEffect(() => {
     const fetchJobs = async () => {
       try {
-        const res = await getAdminJobs(recruiterId, token);
+        setLoading(true);
+        
+        const res = await getAdminJobs(recruiterId);
         setJobs(res.data);
       } catch {
         setMessage("Error fetching jobs");
@@ -42,7 +43,7 @@ function Jobs() {
     };
 
     fetchJobs();
-  }, [recruiterId, token]); // added token
+  }, [recruiterId]); 
 
   if (loading) {
     return <p className="text-center mt-10 text-gray-500">Loading jobs...</p>;

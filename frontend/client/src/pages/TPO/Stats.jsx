@@ -2,7 +2,6 @@ import { useEffect, useState } from "react";
 import { getStats } from "../../services/adminService";
 
 function Stats() {
-  const token = localStorage.getItem("token");
 
   // State management
   const [data, setData] = useState({
@@ -29,7 +28,9 @@ function Stats() {
   useEffect(() => {
     const fetch = async () => {
       try {
-        const res = await getStats(token);
+        setLoading(true);
+
+        const res = await getStats();
         setData(res.data);
       } catch {
         setMessage("Error fetching stats");
@@ -40,7 +41,7 @@ function Stats() {
     };
 
     fetch();
-  }, [token]);
+  }, []);
 
   if (loading) {
     return <p className="text-center mt-10 text-gray-500">Loading stats...</p>;

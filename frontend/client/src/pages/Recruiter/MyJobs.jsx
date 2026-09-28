@@ -37,10 +37,9 @@ function MyJobs() {
   // Fetch jobs
   const fetchJobs = async () => {
     try {
-      const token = localStorage.getItem("token");
+      setLoading(true);
 
       const res = await getMyJobs(
-        token,
         search,
         status,
         jobType
@@ -59,8 +58,8 @@ function MyJobs() {
   // Delete job
   const confirmDelete = async () => {
     try {
-      const token = localStorage.getItem("token");
-      await deleteJob(deleteId, token);
+      
+      await deleteJob(deleteId);
 
       setJobs(jobs.filter((job) => job._id !== deleteId));
       setMessage("Job deleted");

@@ -4,7 +4,6 @@ import { getStudentById, verifyStudent } from "../../services/adminService";
 
 function StudentDetails() {
   const { id } = useParams();
-  const token = localStorage.getItem("token");
 
   // State management
   const [student, setStudent] = useState(null);
@@ -27,7 +26,9 @@ function StudentDetails() {
   useEffect(() => {
     const fetch = async () => {
       try {
-        const res = await getStudentById(id, token);
+        setLoading(true);
+
+        const res = await getStudentById(id);
         setStudent(res.data);
       } catch {
         setMessage("Error fetching student");
@@ -38,14 +39,14 @@ function StudentDetails() {
     };
 
     fetch();
-  }, [id, token]);
+  }, [id]);
 
   // Verify student
   const verify = async () => {
     try {
-      await verifyStudent(id, token);
+      await verifyStudent(id);
 
-      setStudent({ ...student, verified: true });
+      setStudent({ ...student, isApproved: true });
       setMessage("Student verified");
       setType("success");
 
@@ -106,13 +107,13 @@ function StudentDetails() {
         <p className="mt-2 text-sm">
           Status:{" "}
           <span className={
-            student.verified ? "text-green-600" : "text-yellow-500"
+            student.isApproved ? "text-green-600" : "text-yellow-500"
           }>
-            {student.verified ? "Verified" : "Pending"}
+            {student.isApproved ? "Verified" : "Pending"}
           </span>
         </p>
 
-        {!student.verified && (
+        {!student.isApproved && (
           <button
             onClick={verify}
             className="w-full mt-3 bg-blue-600 text-white py-2 rounded-lg hover:bg-blue-700 transition"

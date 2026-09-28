@@ -32,10 +32,8 @@ function Home() {
             </Link>
 
             {!user && (
-              <Link to="/signup">
-                <button className="w-full sm:w-auto bg-white text-slate-700 border px-8 py-3 rounded-full font-semibold hover:bg-slate-50 transition">
-                  Create Account
-                </button>
+              <Link to="/signup" className="w-full sm:w-auto bg-white text-slate-700 border px-8 py-3 rounded-full font-semibold hover:bg-slate-50 transition">
+                Create Account
               </Link>
             )}
 

@@ -3,62 +3,39 @@ import API from "../api";
 // --- Profile ---
 
 // Fetch user profile
-export const getProfile = (token) =>
-    API.get("/users/profile", {
-        headers: {
-            Authorization: `Bearer ${token}`
-        },
-    });
+export const getProfile = () =>
+    API.get("/users/profile");
 
 // Update user profile
-export const updateProfile = (data, token) =>
-    API.put("/users/profile", data, {
-        headers: {
-            Authorization: `Bearer ${token}`,
-        },
-    });
+export const updateProfile = (data) =>
+    API.put("/users/profile", data);
 
-export const uploadImage = (formData, token) =>
+export const uploadImage = (formData) =>
     API.post("/users/profile-image", formData, {
         headers: {
             "Content-Type": "multipart/form-data",
-            Authorization: `Bearer ${token}`,
         },
     });
 
-export const removeImage = (token) =>
-    API.delete("/users/profile-image", {
-        headers: {
-            Authorization: `Bearer ${token}`,
-        }
-    });
+export const removeImage = () =>
+    API.delete("/users/profile-image");
 
 // --- Resume ---
 
 // Upload user resume
-export const uploadResume = (formData, token) =>
+export const uploadResume = (formData) =>
     API.post("/users/upload-resume", formData, {
         headers: {
             "Content-Type": "multipart/form-data",
-            Authorization: `Bearer ${token}`,
         },
     });
 
 // --- Account ---
 
 // Delete user account
-export const deleteAccount = (data, token) =>
-    API.delete("/users/profile", {
-        data,
-        headers: {
-            Authorization: `Bearer ${token}`,
-        },
-    });
+export const deleteAccount = (data) =>
+    API.delete("/users/profile", data);
 
 // Change user password
-export const changePassword = (data, token) =>
-    API.put("/users/change-password", data, {
-        headers: {
-            Authorization: `Bearer ${token}`,
-        },
-    });
+export const changePassword = (data) =>
+    API.put("/users/change-password", data);

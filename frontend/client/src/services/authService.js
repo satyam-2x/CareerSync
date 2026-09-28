@@ -20,10 +20,8 @@ export const verifyOtp = (email, otp) => API.post("/auth/verify-otp", {
 });
 
 // send logout request to backend
-export const logoutUser = (token) =>
-  API.post("/auth/logout", {}, {
-    headers: { Authorization: `Bearer ${token}` },
-  });
+export const logoutUser = () =>
+  API.post("/auth/logout", {});
 
 // --- Password Management ---
 

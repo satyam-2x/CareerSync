@@ -37,7 +37,6 @@ const CustomInput = ({
 function UpdateProfile() {
   const navigate = useNavigate();
   const fileInputRef = useRef(null);
-  const token = localStorage.getItem("token");
 
   // State management
   const [user, setUser] = useState(null);
@@ -65,7 +64,7 @@ function UpdateProfile() {
   useEffect(() => {
     const fetchProfile = async () => {
       try {
-        const res = await getProfile(token);
+        const res = await getProfile();
         setUser(res.data.user);
         setForm(res.data.user);
       } catch {
@@ -81,7 +80,7 @@ function UpdateProfile() {
   const handleChange = (e) => {
     const { name, value } = e.target;
 
-    if (name === "semester" && (value < 1 || value > 8)) return;
+    if (name === "semester" && value !== "" && (value < 1 || value > 8)) return;
 
     if (
       name === "branch" &&
@@ -97,7 +96,6 @@ function UpdateProfile() {
       return;
     }
 
-    if (name === "branch" && !/^[A-Za-z\s]*$/.test(value)) return;
 
     if (
       name === "prn" &&
@@ -147,7 +145,7 @@ function UpdateProfile() {
       const formData = new FormData();
       formData.append("image", file);
 
-      const res = await uploadImage(formData, token);
+      const res = await uploadImage(formData);
 
       setForm((prev) => ({
         ...prev,
@@ -171,7 +169,7 @@ function UpdateProfile() {
     try {
       setImageUploading(true);
 
-      const res = await removeImage(token);
+      const res = await removeImage();
 
       setForm((prev) => ({
         ...prev,
@@ -204,7 +202,7 @@ function UpdateProfile() {
       const formData = new FormData();
       formData.append("resume", file);
 
-      const res = await uploadResumeAPI(formData, token);
+      const res = await uploadResumeAPI(formData);
 
       setForm((prev) => ({
         ...prev,
@@ -272,7 +270,7 @@ function UpdateProfile() {
     try {
       setLoading(true);
 
-      const res = await updateProfile(data, token);
+      const res = await updateProfile(data);
 
       setMessage(res.data.message || "Profile updated");
       setType("success");
@@ -311,8 +309,11 @@ function UpdateProfile() {
         )}
 
         <div className="flex flex-col items-center mt-4 mb-4">
-
-          {form.profileImage ? (
+          {imageUploading ? (
+            <div className="w-24 h-24 rounded-full bg-gray-200 flex items-center justify-center animate-pulse">
+              <span className="text-sm text-gray-500">Wait...</span>
+            </div>
+          ) : form.profileImage ? (
             <img
               src={form.profileImage}
               onClick={() => setShowImageMenu(true)}

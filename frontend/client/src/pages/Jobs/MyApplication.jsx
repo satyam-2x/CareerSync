@@ -23,8 +23,8 @@ function MyApplications() {
   useEffect(() => {
     const fetchApps = async () => {
       try {
-        const token = localStorage.getItem("token");
-        const res = await getMyApplications(localStorage.getItem("token"));
+        setLoading(true);
+        const res = await getMyApplications();
         setApps(res.data);
       } catch (error) {
         setMessage("Error fetching applications");

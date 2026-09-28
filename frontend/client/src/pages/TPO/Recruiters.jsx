@@ -4,7 +4,6 @@ import { getRecruiters } from "../../services/adminService";
 
 function Recruiters() {
   const navigate = useNavigate();
-  const token = localStorage.getItem("token");
 
   // State management
   const [data, setData] = useState([]);
@@ -27,7 +26,9 @@ function Recruiters() {
   useEffect(() => {
     const fetch = async () => {
       try {
-        const res = await getRecruiters(token);
+        setLoading(true)
+        
+        const res = await getRecruiters();
         setData(res.data);
       } catch {
         setMessage("Error fetching recruiters");
@@ -38,7 +39,7 @@ function Recruiters() {
     };
 
     fetch();
-  }, [token]);
+  }, []);
 
   if (loading) {
     return <p className="text-center mt-10 text-gray-500">Loading recruiters...</p>;
@@ -80,11 +81,11 @@ function Recruiters() {
                 <p className="text-sm mt-1">
                   Status:{" "}
                   <span className={
-                    r.verified
+                    r.isApproved
                       ? "text-green-600"
                       : "text-yellow-500"
                   }>
-                    {r.verified ? "Verified" : "Pending"}
+                    {r.isApproved ? "Verified" : "Pending"}
                   </span>
                 </p>
 

@@ -9,20 +9,23 @@ const jobAppliedTemplate = require("../utils/emails/jobApplied");
 exports.getAllJobs = async (req, res) => {
     try {
         const { search } = req.query;
+        const page = parseInt(req.query.page) || 1;
+        
+        const limit = 10;
+        const skip = (page - 1) * limit;
 
         let query = { approved: true };
 
-        if (search) {
-            query.$or = [
-                { title: { $regex: search, $options: "i" } },
-                { description: { $regex: search, $options: "i" } },
-                { location: { $regex: search, $options: "i" } }
-            ];
+        if(search) {
+            query.$text = { $search: search };
         }
 
         const jobs = await Job.find(query)
-            .populate("recruiterId", "companyName");
-
+            .populate("recruiterId", "companyName")
+            .skip(skip)
+            .limit(limit)
+            .lean();
+            
         res.status(200).json(jobs);
     } catch (error) {
         console.error(error);

@@ -1,9 +1,5 @@
 import API from "../api";
 
 // Send chat message to AI backend
-export const sendMessage = (data, token) =>
-  API.post("/chat", data, {
-    headers: {
-      Authorization: `Bearer ${token}`,
-    },
-  });
+export const sendMessage = (data) =>
+  API.post("/chat", data);

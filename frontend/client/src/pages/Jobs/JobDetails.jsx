@@ -39,18 +39,11 @@ function JobDetails() {
   }, [id]);
 
   const handleApply = async () => {
-    const token = localStorage.getItem("token");
-
-    if (!token) {
-      setMessage("Please login first to apply");
-      setType("error");
-      return;
-    }
 
     try {
       setLoading(true);
 
-      const res = await applyJob(id, token);
+      const res = await applyJob(id);
 
       setMessage(res.data.message || "Applied successfully");
       setType("success");

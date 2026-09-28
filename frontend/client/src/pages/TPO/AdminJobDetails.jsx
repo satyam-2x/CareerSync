@@ -4,7 +4,6 @@ import { getAdminJobById, approveJob } from "../../services/adminService";
 
 function JobDetails() {
   const { id } = useParams();
-  const token = localStorage.getItem("token"); 
 
   // State management
   const [job, setJob] = useState(null);
@@ -27,7 +26,7 @@ function JobDetails() {
   useEffect(() => {
     const fetch = async () => {
       try {
-        const res = await getAdminJobById(id, token);
+        const res = await getAdminJobById(id);
         setJob(res.data);
       } catch {
         setMessage("Error fetching job");
@@ -42,7 +41,7 @@ function JobDetails() {
   // Approve job
   const approve = async () => {
     try {
-      await approveJob(id, token);
+      await approveJob(id);
 
       setJob({ ...job, approved: true });
       setMessage("Job approved");

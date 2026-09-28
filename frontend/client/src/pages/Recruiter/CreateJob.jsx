@@ -70,8 +70,6 @@ function CreateJob() {
     try {
       setLoading(true);
 
-      const token = localStorage.getItem("token");
-
       await createJob({
         ...form,
         requirements: form.requirements
@@ -85,7 +83,7 @@ function CreateJob() {
           : [],
         minCgpa: Number(form.minCgpa) || 0,
       },
-        token
+
       );
 
       setMessage("Job created successfully");

@@ -21,8 +21,8 @@ function Profile() {
   useEffect(() => {
     const fetchProfile = async () => {
       try {
-        const token = localStorage.getItem("token");
-        const res = await getProfile(token);
+  
+        const res = await getProfile();
         setUser(res.data.user);
       } catch {
         setMessage("Error loading profile");
